@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_height="229dp"
+        android:layout_width="match_parent"
+        android:layout_weight="0.72" />
+    <com.github.mikephil.charting.charts.PieChartChart
+        android:id="@+id/piechart"
+        android:layout_height="229dp"
+        android:layout_width="match_parent"
+        android:layout_weight="0.72" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:id="@+id/radio_mh"
+
+            android:layout_weight="5">
+            <RadioButton android:id="@+id/radio_min"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/daghighe"
+                android:onClick="onRadioButtonClicked"
+                android:checked="false"
+
+
+                />
+            <RadioButton android:id="@+id/radio_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/saat"
+                android:onClick="onRadioButtonClicked"
+                android:checked="true" />
+            <RadioButton android:id="@+id/radio_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/day"
+                android:onClick="onRadioButtonClicked"
+                android:checked="false" />
+
+        </RadioGroup>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:id="@+id/radio_TarikhcheOrAmar"
+
+            android:layout_weight="5">
+            <RadioButton android:id="@+id/radio_tarikhche"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tarikhche"
+                android:onClick="onRadioButtonClicked"
+                android:checked="true"
+
+
+                />
+            <RadioButton android:id="@+id/radio_amar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/amar"
+                android:onClick="onRadioButtonClicked"
+                android:checked="false" />
+            <RadioButton android:id="@+id/radio_chera"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:text="@string/chera"
+                         android:onClick="onRadioButtonClicked"
+                         android:checked="false" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+</LinearLayout>

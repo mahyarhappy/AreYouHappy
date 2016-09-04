@@ -1,0 +1,166 @@
+<resources>
+    <string name="app_name">
+        خوشحالی سنج
+    </string>
+    <string name="washappy">
+        <b>
+            چقدر خوشحال بودی؟
+        </b>
+
+    </string>
+    <string name="areyouhappy">
+        چقدر خوشحالی؟
+    </string>
+    <string name="sabt">
+        ثبت
+    </string>
+    <string name="sabtshod">
+<b>
+        ثبت شد
+</b>
+
+    </string>
+    <string name="deleteeverything">
+        همه اطلاعات را پاک کن
+    </string>
+    <string name="saat">
+        ساعت
+    </string>
+    <string name="daghighe">
+دقیقه
+    </string>
+    <string name="day">
+روز
+    </string>
+    <string name="nodata">
+        داده ای برای ترسیم وجود ندارد.
+    </string>
+    <string name="amar">
+        آمار
+    </string>
+    <string name="tarikhche">
+        سری زمانی
+    </string>
+     <string name="cheghadrkhoshhaliHint">
+چقدر خوشحالی؟
+صفر یعنی بسیار ناراحت و ده یعنی بسیار خوشحال
+    </string>
+    <string name="activitytitle1">
+سیبی
+    </string>
+    <string name="AreYouSureTitle">
+        پاک کردن داده
+    </string>
+    <string name="ok">
+بله
+    </string>
+    <string name="cancel">
+        خیر
+    </string>
+    <string name="AreYouSureDelete">
+        آیا مطمئنی می خواهی همه اطلاعات را پاک کنی؟
+    </string>
+    <string name="deleteshod">
+        همه اطلاعات پاک شد
+    </string>
+    <string name="tanzimat">
+        تنظیمات
+    </string>
+    <string name="whereami">
+        مکانم را روی نقشه نشان بده
+    </string>
+    <string name="updatemyplace">
+        مکانم را به روز کن
+    </string>
+     <string name="sp1">
+        خانواده
+    </string>
+    <string name="sp0">
+        دلیل ناراحتی یا خوشحالی؟
+    </string>
+     <string name="sp2">
+سلامتی
+    </string>
+     <string name="sp3">
+دوستان
+    </string>
+     <string name="sp4">
+ورزشی
+    </string>
+     <string name="sp5">
+برنامه تلویزیون غیر ورزش
+    </string>
+     <string name="sp6">
+شغل و درآمد
+    </string>
+    <string name="sp7">
+خستگی
+    </string>
+    <string name="sp8">
+هیچکدام
+    </string>
+    <string name="sp9">
+عشقی
+    </string>
+    <string name="dalil">
+دلیل ناراحتی یا خوشحالی؟
+    </string>
+    <string-array name="planets_array">
+         <item>
+ @string/sp0
+        </item>
+        <item>
+            @string/sp1
+        </item>
+         <item>
+            @string/sp2
+        </item>
+         <item>
+            @string/sp3
+        </item>
+         <item>
+            @string/sp4
+        </item>
+         <item>
+            @string/sp5
+        </item>
+         <item>
+            @string/sp6
+        </item>
+         <item>
+            @string/sp7
+        </item>
+         <item>
+            @string/sp8
+        </item>
+ <item>
+            @string/sp9
+        </item>
+    </string-array>
+<string name="chera">
+    دلیل خوشحالی
+</string>
+      <string name="notchosen">
+انتخاب نشده
+    </string>
+    <string name="man">من</string>
+    <string name="kol">
+        کل ایران
+    </string>
+    <string name="region">حوالی من</string>
+    <string name="azyekmahepish">از یک ماه پیش</string>
+    <string name="hamezamanha">همه زمان ها</string>
+    <string name="azyekhaftepish">از یک هفته پیش</string>
+    <string name="PersAmarDay">
+        چقدر در طول ساعت های یک روز خوشحالی
+    </string>
+
+<string name="IranAmarDay">
+        کل ایران در طول روز چقدر خوشحال است
+    </string>
+    <string name="Why1">چیزهایی که باعث خوشحالی ات بوده است</string>
+    <string name="Why2">چیزهایی که باعث خوشحالی ایرانی ها بوده است</string>
+    <string name="TSPersThisWeek">این هفته چقدر خوشحال بودی</string>
+    <string name="TSWThisWeek">ایران این هفته چقدر خوشحال بود</string>
+
+</resources>
