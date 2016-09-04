@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">
-        خوشحالی سنج
+        KhoshhaliSanj
     </string>
     <string name="washappy">
         <b>
@@ -17,6 +17,12 @@
     <string name="sabtshod">
 <b>
         ثبت شد
+</b>
+
+    </string>
+    <string name="darhalesabt">
+<b>
+در حال ثبت
 </b>
 
     </string>
@@ -162,5 +168,27 @@
     <string name="Why2">چیزهایی که باعث خوشحالی ایرانی ها بوده است</string>
     <string name="TSPersThisWeek">این هفته چقدر خوشحال بودی</string>
     <string name="TSWThisWeek">ایران این هفته چقدر خوشحال بود</string>
+
+
+    <string-array name="conv_array">
+        <item>
+            @string/PersAmarDay
+        </item>
+         <item>
+            @string/IranAmarDay
+        </item>
+         <item>
+            @string/Why1
+        </item>
+         <item>
+            @string/Why2
+        </item>
+         <item>
+            @string/TSPersThisWeek
+        </item>
+         <item>
+            @string/TSWThisWeek
+        </item>
+    </string-array>
 
 </resources>

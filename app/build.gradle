@@ -7,16 +7,19 @@ android {
     defaultConfig {
         applicationId "happy.happy2"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 22
         multiDexEnabled true
         versionCode 1
         versionName "1.0"
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
     buildTypes {
         release {
-         //  shrinkResources true
-       //     minifyEnabled false
-        //    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            //  shrinkResources true
+            //     minifyEnabled false
+            //    proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -27,6 +30,7 @@ repositories {
 
     }
 }
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
@@ -35,6 +39,7 @@ dependencies {
     //    compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
     compile 'com.google.android.gms:play-services:7.8.0'
     compile 'com.google.android.gms:play-services-maps:7.8.0'
-    compile(name:'kinvey-android-2.10.8', ext:'aar')
+    compile(name: 'kinvey-android-2.10.8', ext: 'aar')
     compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
 }

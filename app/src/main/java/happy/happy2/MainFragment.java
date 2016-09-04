@@ -22,6 +22,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,8 +53,10 @@ import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.java.model.KinveyDeleteResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static android.widget.Toast.makeText;
 
@@ -62,7 +67,8 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
     private String your_app_secret = "cd660e010c734b908d0c7720802aef5c";
     private String your_app_mastersecret = "0412a3c640df46a79352026684f1826c";
     int gettimes = 0;
-    int MinuteBetweenUpdates=600;//1/60;
+    int MinuteBetweenUpdates=1;//1/60;
+    int MinuteBetweenUpdatesforGraph=60;
     private Button areyouhappy;
     private Button wereyouhappy;
     private Button PersAmarDay;
@@ -95,6 +101,8 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
     private Button TSThisWeekAll;
     private Button TSThisWeekMe;
     public static boolean TryConnectiontoGoogleApi=false;
+    private RecyclerView mCrimeRecyclerView;
+    private CrimeAdapter mAdapter;
 
 
     //static SQLiteDatabase mAdvDatabase;
@@ -104,7 +112,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
 
         super.onCreate(savedInstanceState);
         font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/BNAZANIN.ttf");
-        mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Original Database
+       //
 //		mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Temp databse
         if(TryConnectiontoGoogleApi==false){
             TryConnectiontoGoogleApi=true;
@@ -117,9 +125,10 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
 
         }
 
+        mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Original Database
+      //  mKinveyClient = new Client.Builder(your_app_key, your_app_secret, getActivity()).build();
+        mKinveyClient = new Client.Builder(your_app_key,  your_app_mastersecret, getActivity()).build();
 
-        mKinveyClient = new Client.Builder(your_app_key, your_app_secret //your_app_secret
-                , getActivity()).build();
         //	sparray=new String[100+1];
         //	for(int i=0;i<=100;i+=1){
         //		sparray[i]="sp"+i;
@@ -127,13 +136,27 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        
         View v = inflater.inflate(R.layout.mainfragment, container, false);
+
+        mCrimeRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        String[] tempstring1 = getResources().getStringArray(R.array.conv_array);
+        List<String> tempstring2 = new ArrayList<String>(Arrays.asList(tempstring1));
+        mAdapter = new CrimeAdapter(tempstring2);
+        mCrimeRecyclerView.setAdapter(mAdapter);
+
+
+
         spinner = (Spinner) v.findViewById(R.id.spinner);
-// Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.planets_array, android.R.layout.simple_spinner_item);
 // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+
+
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -157,74 +180,6 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
             }
         });
 
-        PersAmarDay = (Button) v.findViewById(R.id.PersAmarDay);
-        PersAmarDay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                updateAndShowHappinessFragment();
-            }
-        });
-        IranAmarDay = (Button) v.findViewById(R.id.IranAmarDay);
-        IranAmarDay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                updateAndShowHappinessFragment();
-            }
-        });
-        WhyMe = (Button) v.findViewById(R.id.Why1);
-        WhyMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-               // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                updateAndShowHappinessFragment();
-            }
-        });
-        WhyAll = (Button) v.findViewById(R.id.Why2);
-        WhyAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                updateAndShowHappinessFragment();
-            }
-        });
-
-        TSThisWeekAll = (Button) v.findViewById(R.id.TSWThisWeek);
-        TSThisWeekAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.azyekhaftepish);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                updateAndShowHappinessFragment();
-            }
-        });
-
-        TSThisWeekMe  = (Button) v.findViewById(R.id.TSPersThisWeek);
-        TSThisWeekMe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
-                QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                updateAndShowHappinessFragment();
-            }
-        });
-
-
         sabt = (Button) v.findViewById(R.id.sabt);
         ratingBar = (RatingBar) v.findViewById(R.id.ratingBar);
         sabt.setOnClickListener(new View.OnClickListener() {
@@ -232,7 +187,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
             public void onClick(View view) {
                 putNewData(ratingBar.getRating());
                 makeText(getActivity(),
-                        R.string.sabtshod,
+                        R.string.darhalesabt,
                         Toast.LENGTH_SHORT).show();
                 // notified();
                 spinner.setSelection(0);
@@ -280,7 +235,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
             Calendar cc = GregorianCalendar.getInstance();//cc.getTimeInMillis()
             long x22 = cc.getTimeInMillis();
             long LastTimeInternet = QueryPreferences.getStoredLong(getActivity(), "LastTimeInternet");
-            runfunc.add("LoginToKinvey");
+           // runfunc.add("LoginToKinvey");
 
             if (x22 - LastTimeInternet > 1000 * 60 * MinuteBetweenUpdates) {
                 QueryPreferences.setStoredLong(getActivity(), "LastTimeInternet", x22);
@@ -291,13 +246,17 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
                 runfunc.add("GetWorldDataforProcessing");
                 runfunc.add("GetWorldDataForPlotting");
             }
-
-            runfunc.add("UploadPersonalDataToKinvey");
+            if (x22 - LastTimeInternet > 1000 * 60 * MinuteBetweenUpdatesforGraph) {
+                runfunc.add("UploadPersonalDataToKinvey");
+                TaskDone();
+            }
         }
+
     }
     public void updatedb2() {
         ProcessPersonalData();
         runfunc.add("updatedb3");
+
         isConnected=false;
         LoginToKinvey("Report");
 
@@ -425,8 +384,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
         //delete Why Data Related to this user in WhyWorldRaw Database
         final AsyncAppData<EventEntity> myevents40 = mKinveyClient.appData("WhyWorldRaw", EventEntity.class);
         Query query = mKinveyClient.query();
-        Log.e("idinuser","chetory");
-        Log.e("idinuser",mKinveyClient.user().getId());
+
         query.equals("_acl.creator", mKinveyClient.user().getId());
        // query.equals("_id", mKinveyClient.user().getId());
 String sasdasd=mKinveyClient.user().getId();
@@ -441,10 +399,12 @@ String sasdasd=mKinveyClient.user().getId();
                     event1.set("whyindex", iy);
                     int temp12 = sp1.get(iy);
                     event1.set("whycount", sp1.get(iy));
-                    if (LetUploadPersonal) {
-                        UploadEvent(event1, "WhyPersonal");
+                    if(temp12>0) {
+                        if (LetUploadPersonal) {
+                            UploadEvent(event1, "WhyPersonal");
+                        }
+                        UploadEvent(event1, "WhyWorldRaw");
                     }
-                    UploadEvent(event1, "WhyWorldRaw");
                 }
 
                 TaskDone();
@@ -1031,7 +991,11 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
         mAdvDatabase.insert("HappyDataBaseTemp", null, values2);
         //  updatedb("HappyDataBaseTemp","HappyDataBaseAlaki");
         //updatedb("HappyDataBaseTemp", "HappyDataBase");
+
         updatedb2();
+        makeText(getActivity(),
+                R.string.sabtshod,
+                Toast.LENGTH_SHORT).show();
     }
 
     public void UploadEvent(EventEntityTimeSeries event, String CollectionName) {
@@ -1133,6 +1097,11 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
                     }
                 }
             });
+        }else{
+            if (DoNotReport == 0) {
+                isConnected=true;
+                TaskDone();
+            }
         }
 
     }
@@ -1376,6 +1345,169 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
                 }
                 return;
             }
+        }
+    }
+    private class CrimeHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener  {
+        public TextView mTitleTextView;
+        public int position1;
+
+        public CrimeHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mTitleTextView = (TextView) itemView;
+        }
+        @Override
+        public void onClick(View v) {
+            switch(position1){
+                case 0:
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                    break;
+                case 1:
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                    break;
+                case 2:
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                    break;
+                case 3:
+
+
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                    break;
+                case 4:
+
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                    break;
+                case 5:
+
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    updateAndShowHappinessFragment();
+
+
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:
+                    break;
+            }
+
+            /*
+            PersAmarDay = (Button) v.findViewById(R.id.PersAmarDay);
+            PersAmarDay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+            IranAmarDay = (Button) v.findViewById(R.id.IranAmarDay);
+            IranAmarDay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+            WhyMe = (Button) v.findViewById(R.id.Why1);
+            WhyMe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+            WhyAll = (Button) v.findViewById(R.id.Why2);
+            WhyAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+
+            TSThisWeekAll = (Button) v.findViewById(R.id.TSWThisWeek);
+            TSThisWeekAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+
+            TSThisWeekMe  = (Button) v.findViewById(R.id.TSPersThisWeek);
+            TSThisWeekMe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    updateAndShowHappinessFragment();
+                }
+            });
+            */
+
+        }
+    }
+    private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
+        private List<String> mCrimes;
+        public CrimeAdapter(List<String> crimes) {
+            mCrimes = crimes;
+        }
+        @Override
+        public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater
+                    .inflate(android.R.layout.simple_list_item_1, parent, false);
+            return new CrimeHolder(view);
+        }
+        @Override
+        public void onBindViewHolder(CrimeHolder holder, int position) {
+            String crime = mCrimes.get(position);
+            holder.position1=position;
+            holder.mTitleTextView.setText(crime);
+        }
+        @Override
+        public int getItemCount() {
+            return mCrimes.size();
         }
     }
 }
