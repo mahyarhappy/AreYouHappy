@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -88,7 +87,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
     public Integer WhyPosition = 0;
     static Client mKinveyClient;
     public boolean LetUploadPersonal = false;
-    public boolean LetProcessWorldData=true;
+    public boolean ImMaster =true;
     int pendingactivities=0;
     ArrayList<String> runfunc = new ArrayList<String>();
     //static SQLiteDatabase mDatabase;
@@ -126,8 +125,13 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
         }
 
         mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Original Database
-      //  mKinveyClient = new Client.Builder(your_app_key, your_app_secret, getActivity()).build();
-        mKinveyClient = new Client.Builder(your_app_key,  your_app_mastersecret, getActivity()).build();
+      //
+        if(ImMaster){
+            mKinveyClient = new Client.Builder(your_app_key,  your_app_mastersecret, getActivity()).build();
+        }else{
+            mKinveyClient = new Client.Builder(your_app_key, your_app_secret, getActivity()).build();
+        }
+
 
         //	sparray=new String[100+1];
         //	for(int i=0;i<=100;i+=1){
@@ -239,7 +243,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
 
             if (x22 - LastTimeInternet > 1000 * 60 * MinuteBetweenUpdates) {
                 QueryPreferences.setStoredLong(getActivity(), "LastTimeInternet", x22);
-                if (LetProcessWorldData) {
+                if (ImMaster) {
                     runfunc.add("UploadWorldDataToWorldKinvey");
                     runfunc.add("ProcessWorldData");
                 }
