@@ -1,4 +1,4 @@
-package happy.happy2;
+package happy.happy3;
 
 /**
  * Created by LENOVO on 7/17/2016.
@@ -67,7 +67,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
     private String your_app_mastersecret = "0412a3c640df46a79352026684f1826c";
     int gettimes = 0;
     int MinuteBetweenUpdates=1;//1/60;
-    int MinuteBetweenUpdatesforGraph=60;
+    int MinuteBetweenUpdatesforGraph=1;
     private Button areyouhappy;
     private Button wereyouhappy;
     private Button PersAmarDay;
@@ -90,6 +90,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
     public boolean ImMaster =true;
     int pendingactivities=0;
     ArrayList<String> runfunc = new ArrayList<String>();
+    ArrayList<String> RunTaskDOne = new ArrayList<String>(); //Run Taskdone() at the end of this function
     //static SQLiteDatabase mDatabase;
     static SQLiteDatabase mAdvDatabase;
     String[] sparray;
@@ -190,9 +191,11 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
             @Override
             public void onClick(View view) {
                 putNewData(ratingBar.getRating());
+                /*
                 makeText(getActivity(),
-                        R.string.darhalesabt,
+                        R.string.sabtshod,
                         Toast.LENGTH_SHORT).show();
+                        */
                 // notified();
                 spinner.setSelection(0);
 
@@ -219,13 +222,18 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
         return v;
     }
     public void updateAndShowHappinessFragment() {
+        makeText(getActivity(),
+                R.string.darhalesabt,
+                Toast.LENGTH_SHORT).show();
+        RunTaskDOne.clear();
         runfunc.add("ShowHappinessFragment");
 
         //runfunc.add("GetWorldDataForPlotting");
         //
         runfunc.add("updatedb2");
+
         TaskDone();
-        TaskDone();
+        //TaskDone();
     }
     public void ShowHappinessFragment() {
         getActivity().getSupportFragmentManager().beginTransaction()
@@ -244,6 +252,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
             if (x22 - LastTimeInternet > 1000 * 60 * MinuteBetweenUpdates) {
                 QueryPreferences.setStoredLong(getActivity(), "LastTimeInternet", x22);
                 if (ImMaster) {
+                  //  RunTaskDOne.add()
                     runfunc.add("UploadWorldDataToWorldKinvey");
                     runfunc.add("ProcessWorldData");
                 }
@@ -403,6 +412,7 @@ String sasdasd=mKinveyClient.user().getId();
                     event1.set("whyindex", iy);
                     int temp12 = sp1.get(iy);
                     event1.set("whycount", sp1.get(iy));
+                    event1.set("whypercent", sp1.getPercent(iy));
                     if(temp12>0) {
                         if (LetUploadPersonal) {
                             UploadEvent(event1, "WhyPersonal");
@@ -551,7 +561,7 @@ String sasdasd=mKinveyClient.user().getId();
                     }
                 });
                 */
-                mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
+
                 TaskDone();
             }
             @Override
@@ -575,7 +585,9 @@ String sasdasd=mKinveyClient.user().getId();
                     //	sp2.set((Integer) x1.get("whyindex"))
                     int temp1 = (Integer) x1.get("whyindex");
                     int temp2 = (Integer) x1.get("whycount");
-                    sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whycount"));
+                   int temp3= (Integer) x1.get("whypercent");
+                   // sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whycount"));
+                    sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whypercent"));
                 }
                 /*
                 Query query3 = mKinveyClient.query();
@@ -621,7 +633,7 @@ String sasdasd=mKinveyClient.user().getId();
         });
 
 
-
+        mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
         updatedb("HappyDataBaseTimeSeriesAllPeopleTemp", "HappyDataBaseTimeSeriesAllPeople","HappyDataBaseTimeSeriesAllPeopleSummary",false);
         //get Why
         //New WorldSummaryData
@@ -745,7 +757,8 @@ TaskDone();
             //mAdvDatabase.execSQL("update HappyDataBase set isuploaded=1 WHERE LastData = 0 AND (isuploaded = 0 OR isuploaded IS NULL) AND (istemp = 0 OR istemp IS NULL)");
             //mAdvDatabase.execSQL("update HappyDataBase set isuploaded=1 WHERE " + quer1);
             //mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
-            mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
+
+          //  mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
         }
 
         final AsyncAppData<EventEntityWhy> myevents43 = mKinveyClient.appData("WhyWorld", EventEntityWhy.class);
@@ -760,6 +773,8 @@ TaskDone();
                     event1.set("whyindex", iy);
                     int temp12 = sp2.get(iy);
                     event1.set("whycount", sp2.get(iy));
+                    event1.set("whypercent", sp2.getPercent(iy));
+                    int temp3=sp2.getPercent(iy);
                     UploadEvent(event1, "WhyWorld");
                 }
             }
@@ -768,7 +783,7 @@ TaskDone();
 
             }
         });
-
+TaskDone();
         //sp2.makeallzero();
     }
     public void updatedb(String InputTableName, String OutputTableName, String OutputSummaryTableName, boolean TurnToNext) {
@@ -977,6 +992,7 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
         }
     }
     public void putNewData(float NumStars) {
+
         Calendar cc = GregorianCalendar.getInstance();
         ContentValues values2 = CurrentTime();
         values2.put("rating", NumStars);
@@ -995,11 +1011,11 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
         mAdvDatabase.insert("HappyDataBaseTemp", null, values2);
         //  updatedb("HappyDataBaseTemp","HappyDataBaseAlaki");
         //updatedb("HappyDataBaseTemp", "HappyDataBase");
-
-        updatedb2();
         makeText(getActivity(),
-                R.string.sabtshod,
+                R.string.darhalesabt,
                 Toast.LENGTH_SHORT).show();
+        updatedb2();
+
     }
 
     public void UploadEvent(EventEntityTimeSeries event, String CollectionName) {
@@ -1114,7 +1130,9 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
     }
     public void TaskDone() {
         if (runfunc.size() >= 1) {
+
             String temp = runfunc.get(runfunc.size() - 1);
+            Log.e("function  ",temp);
             runfunc.remove(runfunc.size() - 1);
             switch (temp) {
                 case "GetWorldDataForPlotting":
@@ -1153,6 +1171,10 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
                     default:
                         Log.e("errorrrr","no function to run  "+temp);
             }
+        }else{
+            makeText(getActivity(),
+                    R.string.sabtshod,
+                    Toast.LENGTH_SHORT).show();
         }
     }
     public long convert1(long date222,int i1){
@@ -1239,9 +1261,7 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
             }
         });
 
-        makeText(getActivity(),
-                R.string.deleteshod,
-                Toast.LENGTH_SHORT).show();
+
     }
 
     public void updatemyplacesetOnClickListener() {

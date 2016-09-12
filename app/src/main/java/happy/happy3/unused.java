@@ -1,9 +1,4 @@
-package happy.happy2;
-
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.CursorWrapper;
-import android.database.DatabaseUtils;
+package happy.happy3;
 
 /**
  * Created by Heaven on 8/24/2016.

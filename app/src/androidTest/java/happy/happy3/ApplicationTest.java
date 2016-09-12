@@ -1,4 +1,4 @@
-package happy.happy2;
+package happy.happy3;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

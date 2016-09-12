@@ -1,8 +1,7 @@
-package happy.happy2;
+package happy.happy3;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;

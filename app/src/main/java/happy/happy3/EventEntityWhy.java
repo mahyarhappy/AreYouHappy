@@ -1,4 +1,4 @@
-package happy.happy2;
+package happy.happy3;
 
 import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.Key;
@@ -7,19 +7,17 @@ import com.kinvey.java.model.KinveyMetaData;
 /**
  * Created by Heaven on 8/14/2016.
  */
-public class EventEntity extends GenericJson {
+public class EventEntityWhy extends GenericJson {
 	@Key
-	private Double rating;
+	private Integer whyindex;
 	@Key
-	private Integer type;
+	private Integer whycount;
 	@Key
-	private Integer IndexInPeriod;
-	@Key
-	private Double longitude;
-	@Key
-	private Double latitude;
+	private Integer whypercent;
 	@Key("_acl")
 	private KinveyMetaData.AccessControlList acl;
-	public EventEntity(){
+
+	public EventEntityWhy(){
+
 	} //GenericJson classes must have a public empty constructor
 }

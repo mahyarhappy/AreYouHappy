@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="happy.happy2" >
+    package="happy.happy3" >
 
     <uses-permission android:name="android.permission.SET_DEBUG_APP" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -23,7 +23,7 @@
             android:value="AIzaSyDJiK6UHdRy4gGBfmwK0cYma70vO0OgmY4" />
 
         <activity
-            android:name=".MainActivity"
+            android:name="happy.happy3.MainActivity"
             android:launchMode="singleTask"
 
             >
@@ -34,9 +34,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".PollService" />
+        <service android:name="happy.happy3.PollService" />
 
-        <receiver android:name=".StartupReceiver" >
+        <receiver android:name="happy.happy3.StartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />

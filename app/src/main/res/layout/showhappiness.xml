@@ -169,14 +169,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <happy.happy2.VerticalTextView xmlns:android="http://schemas.android.com/apk/res/android"
+                <happy.happy3.VerticalTextView xmlns:android="http://schemas.android.com/apk/res/android"
                                                android:orientation="vertical"
                                                android:layout_width="wrap_content"
                                                android:layout_height="match_parent"
                                                android:text="mizan khoshhali"
                     >
 
-                </happy.happy2.VerticalTextView>
+                </happy.happy3.VerticalTextView>
             </LinearLayout>
 
             <LinearLayout

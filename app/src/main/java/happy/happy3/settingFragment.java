@@ -1,8 +1,7 @@
-package happy.happy2;
+package happy.happy3;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,10 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
-
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 import static android.widget.Toast.makeText;
 
@@ -85,6 +80,9 @@ public class settingFragment extends Fragment {
 		if (requestCode == 0) {
 
 		new MainFragment().DeleteEverythingMethod();
+			makeText(getActivity(),
+					R.string.deleteshod,
+					Toast.LENGTH_SHORT).show();
 		}
 	}
 }
