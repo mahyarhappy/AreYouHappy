@@ -952,5 +952,153 @@ public void DownloadFromKenvey() {
         });
 
 
+
+
+    public class NetworkUtil extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            dialog = new ProgressDialog(getActivity());
+            dialog.setMessage("Loading...");
+            dialog.setCancelable(false);
+            dialog.show();
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            if (new CheckNetwork(getActivity()).isNetworkAvailable4()) {
+                // your get/post related code..like HttpPost = new HttpPost(url);
+            } else {
+                Toast.makeText(getActivity(), "no internet!", Toast.LENGTH_SHORT).show();
+            }
+
+
+            return null;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+        }
+
+
+
+
+
+    public class CheckNetwork {
+        private Context context;
+
+        public CheckNetwork(Context context) {
+            this.context = context;
+        }
+
+        public boolean isNetworkAvailable4() {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetworkInfo = connectivityManager
+                    .getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        }
+
+
+
+
+
+
+    private class DownloadImage extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            mDeviceBandwidthSampler.startSampling();
+            //mRunningBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(String... url) {
+            String imageURL = url[0];
+            try {
+                // Open a stream to download the image from our URL.
+                URLConnection connection = new URL(imageURL).openConnection();
+                connection.setUseCaches(false);
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                try {
+                    byte[] buffer = new byte[1024];
+
+                    // Do some busy waiting while the stream is open.
+                    while (input.read(buffer) != -1) {
+                    }
+                } finally {
+                    input.close();
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Error while downloading image.");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void v) {
+            mDeviceBandwidthSampler.stopSampling();
+            if (mConnectionClass == ConnectionQuality.UNKNOWN && mTries < 0) {
+                mTries++;
+                new DownloadImage().execute(mURL);
+            }
+            // Retry for up to 10 times until we find a ConnectionClass.
+            if (mConnectionClass == ConnectionQuality.UNKNOWN ) {
+
+                ismNetworkAvailable=false;
+                TaskDone();
+            }else{
+                ismNetworkAvailable=true;
+                TaskDone();
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+
+    public void isNetworkAvailable( boolean InvokeTaskDone){
+        mConnectionClassManager = ConnectionClassManager.getInstance();
+        mDeviceBandwidthSampler = DeviceBandwidthSampler.getInstance();
+        new DownloadImage().execute(mURL);
+    }
+    public void isNetworkAvailable3( boolean InvokeTaskDone){
+        final boolean InvokeTaskDone2=InvokeTaskDone;
+        final AsyncAppData<EmptyEventEntity> myevents4 = mKinveyClient.appData("TestCollectonDoNotDelete", EmptyEventEntity.class);
+        myevents4.get(new KinveyListCallback<EmptyEventEntity>() {
+            @Override
+            public void onSuccess(EmptyEventEntity[] result) {
+                if(InvokeTaskDone2){
+                    ismNetworkAvailable=true;
+                    TaskDone();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                if(InvokeTaskDone2){
+                    ismNetworkAvailable=false;
+                    TaskDone();
+                }
+            }
+        });
+    }
+
+
 */
 }

@@ -233,8 +233,10 @@ private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
                         } else {
                             labels.add(stringarray[i]);
                         }
-
-                        entries2.add(new PieEntry(sp1.get(i), stringarray[i]));
+int percenttemp=sp1.getPercent(i);
+                        if(percenttemp>15) {
+                            entries2.add(new PieEntry(percenttemp, stringarray[i]));
+                        }
                     }
                 }
                 // entries.add(new Entry(stringarray[i],sp.get(i)));

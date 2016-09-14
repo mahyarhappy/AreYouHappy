@@ -95,12 +95,12 @@ public static Integer  N1=20;
 	}
 	public static void computepercentages(){
 		int allcounts=0;
-		for(int i=0;i<=N1;i+=1){
+		for(int i=1;i<=N1;i+=1){
 			QueryPreferences.setStoredInt(mcontext, stringpercentarray[i], 0);
 			allcounts+=get(i);
 		}
 		if(allcounts>0) {
-			for (int i = 0; i <= N1; i += 1) {
+			for (int i = 1; i <= N1; i += 1) {
 				QueryPreferences.setStoredInt(mcontext, stringpercentarray[i], (get(i)*100) / allcounts);
 			}
 		}

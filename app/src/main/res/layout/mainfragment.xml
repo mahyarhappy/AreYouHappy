@@ -7,19 +7,24 @@
     android:background="#ffffff">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center_vertical|center|center_horizontal">
+            android:gravity="center_vertical|center|center_horizontal"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="14dp">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
+                  android:orientation="vertical"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+        >
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/cheghadrkhoshhaliHint"
             android:id="@+id/textView"
@@ -27,18 +32,21 @@
             android:textSize="17sp"
             android:textColor="#000000" />
 
-        <RatingBar
-            android:layout_width="241dp"
+        <android.widget.RatingBar
+            android:theme="@style/StarRatingBar"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:id="@+id/ratingBar"
             android:layout_gravity="center_horizontal"
             android:clickable="false"
-            android:focusableInTouchMode="true"
-            android:stepSize="1"
-            android:numStars="10"
+            android:focusableInTouchMode="false"
+            android:stepSize="0.5"
+            android:numStars="5"
+            android:scaleX="1"
+            android:scaleY="1"
             android:focusable="false"
-            android:mirrorForRtl="false"
-            android:nestedScrollingEnabled="false" />
+            android:layout_margin="0dp"/>
+
 
 
     </LinearLayout>
@@ -50,28 +58,21 @@
         />
     --><LinearLayout
         android:orientation="vertical"
-        android:layout_width="263dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
     >
 
-    <Spinner
+            <Button
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:id="@+id/spinner"
-        android:prompt="@string/dalil"
-        />
-
-    <Button
-        android:layout_width="293dp"
         android:layout_height="match_parent"
         android:text="@string/sabt"
         android:id="@+id/sabt"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_gravity="center_horizontal"
-        android:textSize="15sp"
-    android:background="@color/colorAccent"
-        />
+        android:textSize="19sp"
+        android:background="@color/colorAccent"
+        android:layout_marginBottom="7dp"/>
 
     <Button
             android:layout_width="match_parent"
@@ -79,8 +80,8 @@
             android:text="@string/washappy"
             android:id="@+id/washappy"
             style="@style/Widget.AppCompat.Button.Colored"
-            android:background="@color/colorPrimary"
-            android:textSize="15sp"
+            android:background="@color/colorAccent"
+            android:textSize="19sp"
             />
 
     </LinearLayout>
@@ -89,22 +90,25 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="232dp">
+                android:layout_height="232dp"
+                android:layout_margin="3dp">
 
             </android.support.v7.widget.RecyclerView>
 
             <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="67dp"
-        android:layout_gravity="bottom|center"
-        android:gravity="center_vertical|center_horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|center"
+                android:gravity="center_vertical|center_horizontal"
+                >
 
         <Button
+            style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="@string/tanzimat"
             android:id="@+id/tanzimat"
-            android:layout_alignParentRight="true"
+            android:background="@color/colorAccent"
             />
 
     </LinearLayout>

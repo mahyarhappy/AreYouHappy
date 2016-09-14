@@ -2,6 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="50dp">
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:text="New Text"
+        android:id="@+id/listtextview"
+        android:layout_gravity="center"
+        android:padding="4dp"
+        android:allowUndo="false"
+        android:gravity="center"
+        android:background="#eceaea"
+        android:layout_marginTop="4dp"
+
+        android:layout_marginBottom="2dp"
+        android:textColor="#242323"/>
 </LinearLayout>

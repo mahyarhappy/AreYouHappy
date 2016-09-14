@@ -3,12 +3,15 @@ package happy.happy3;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import static android.widget.Toast.makeText;
@@ -30,6 +33,34 @@ public class settingFragment extends Fragment {
 		final View v = inflater.inflate(R.layout.settinglayout2, container, false);
 		whereami = (Button) v.findViewById(R.id.whereami);
 		updatemyplace = (Button) v.findViewById(R.id.updatemyplace);
+		Switch ImMasterSwitch = (Switch) v.findViewById(R.id.ImMaster);
+
+		ImMasterSwitch.setChecked(new MainFragment().ImMaster);
+		ImMasterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				new MainFragment().ImMaster=isChecked;
+				PreferenceManager.getDefaultSharedPreferences(getActivity())
+						.edit()
+						.putBoolean("ImMaster", isChecked)
+						.apply();
+			}
+		});
+
+		Switch WorkOfflineSwitch = (Switch) v.findViewById(R.id.WorkOffline);
+
+		WorkOfflineSwitch.setChecked(new MainFragment().WorkOffline);
+		WorkOfflineSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				new MainFragment().WorkOffline=isChecked;
+				PreferenceManager.getDefaultSharedPreferences(getActivity())
+						.edit()
+						.putBoolean("WorkOffline", isChecked)
+						.apply();
+			}
+		});
+
 
 		whereami.setOnClickListener(new View.OnClickListener() {
 			@Override

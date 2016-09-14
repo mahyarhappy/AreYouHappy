@@ -49,7 +49,7 @@
     </string>
      <string name="cheghadrkhoshhaliHint">
 چقدر خوشحالی؟
-صفر یعنی بسیار ناراحت و ده یعنی بسیار خوشحال
+صفر ستاره یعنی بسیار ناراحت و پنج یعنی بسیار خوشحال
     </string>
     <string name="activitytitle1">
 سیبی
@@ -109,7 +109,7 @@
 عشقی
     </string>
     <string name="dalil">
-دلیل ناراحتی یا خوشحالی؟
+دلیل ناراحتی یا خوشحالی را انتخاب کن
     </string>
     <string-array name="planets_array">
          <item>
