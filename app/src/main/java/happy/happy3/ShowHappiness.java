@@ -5,10 +5,12 @@ import android.database.CursorWrapper;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
@@ -28,9 +30,11 @@ import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
 import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.EntryXComparator;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 
 import static android.widget.Toast.makeText;
@@ -83,22 +87,40 @@ public class ShowHappiness extends Fragment {
         //drawchart();
         Integer x1=QueryPreferences.getStoredInt(getActivity(),"DefaultTime");
         Integer x2=QueryPreferences.getStoredInt(getActivity(),"DefaultTarikhcheOrAmar");
+        Integer x3=QueryPreferences.getStoredInt(getActivity(),"DefaultWho");
+        Integer x4=QueryPreferences.getStoredInt(getActivity(),"FromWhen");
         MainFragment xx = new MainFragment();
      //   xx.context1=getActivity();
        // xx.updatedb2();
      //   radioTarikhcheOrAmar.check(R.id.radio_amar);
-        if(x1!=-1){
-            radiomh.check(x1);
+        if(x1==-1){
+            QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+            x1=QueryPreferences.getStoredInt(getActivity(),"DefaultTime");
         }
+        if(x2==-1){
+            QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_amar);
+            x2=QueryPreferences.getStoredInt(getActivity(),"DefaultTime");
+        }
+        if(x3==-1){
+            QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+            x3=QueryPreferences.getStoredInt(getActivity(),"DefaultWho");
+        }
+        if(x4==-1){
+            QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.kol);
+            x4=QueryPreferences.getStoredInt(getActivity(),"FromWhen");
+        }
+
+            radiomh.check(x1);
+
         if(x2!=-1){
             radioTarikhcheOrAmar.check(x2);
         }
-       Integer x3=QueryPreferences.getStoredInt(getActivity(),"DefaultWho");
+
         if(x3!=-1){
             radiowho.check(x3);
         }
 
-        Integer x4=QueryPreferences.getStoredInt(getActivity(),"FromWhen");
+
         if(x4!=-1){
             radiofromwhen.check(x4);
         }
@@ -209,6 +231,7 @@ private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
                 }
             } finally {
                 cursor.close();
+                Collections.sort(entries, new EntryXComparator());
             }
         } else {
             DrawLine = false;
@@ -274,10 +297,15 @@ int percenttemp=sp1.getPercent(i);
                     ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
                     dataSets.add(dataset); // add the datasets
                     dataset.setDrawFilled(true);
-                    dataset.setCircleRadius(10);
+                    int soorat1 = ContextCompat.getColor(getActivity(), R.color.colorAccent);
+                    dataset.setColor(soorat1);
+                  //  dataset.setFillFormatter();
+                    dataset.setFillColor(soorat1);
+                    dataset.setCircleRadius(6);
                     dataset.setCircleColor(Color.BLACK);
+                 //   dataset.setCircleColorHole(soorat1);
                 //   dataset.setColor(Color.GREEN);
-                    dataset.setCircleHoleRadius(5);
+                    dataset.setCircleHoleRadius(4);
                    // dataset.setColors(new int[]{Color.BLACK});
                     //chart = (LineChart) v.findViewById(R.id.chart);
                     LineData data = new LineData(dataset);

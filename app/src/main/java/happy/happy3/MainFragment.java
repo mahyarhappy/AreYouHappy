@@ -6,48 +6,36 @@ package happy.happy3;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RatingBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,7 +44,6 @@ import com.facebook.network.connectionclass.ConnectionQuality;
 import com.facebook.network.connectionclass.DeviceBandwidthSampler;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.gcm.Task;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -72,10 +59,8 @@ import com.kinvey.java.core.KinveyClientCallback;
 import com.kinvey.java.model.KinveyDeleteResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -95,8 +80,8 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
 
     public int minutecutConstant = 2;
     public int hourcutConstant = 3;
-    int MinuteBetweenUpdates=60;//1/60;
-    int MinuteBetweenUpdatesforGraph=360;
+    static int DownloadMinute ;//1/60;
+    static int UploadMinute ;
     public static boolean WorkOffline;
     public static boolean ImMaster;
     int gettimes = 0;
@@ -147,6 +132,7 @@ private UpdateAsync UpdateAsyncInstance;
  //   private String mURL="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
     private int mTries = 0;
     private ConnectionQuality mConnectionClass = ConnectionQuality.UNKNOWN;
+    private static boolean justsabt;
 
 
     //static SQLiteDatabase mAdvDatabase;
@@ -170,6 +156,10 @@ private UpdateAsync UpdateAsyncInstance;
      //       mGoogleApiClient.connect();
 
         }
+        UploadMinute=PreferenceManager.getDefaultSharedPreferences(context1)
+                .getInt("UploadMinute", 60);
+        DownloadMinute=PreferenceManager.getDefaultSharedPreferences(context1)
+                .getInt("DownloadMinute", 360);
 
         mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Original Database
       //
@@ -184,6 +174,9 @@ private UpdateAsync UpdateAsyncInstance;
         //	for(int i=0;i<=100;i+=1){
         //		sparray[i]="sp"+i;
         //	}
+
+
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -275,7 +268,7 @@ private UpdateAsync UpdateAsyncInstance;
                 */
         RunTaskDOne.clear();
         runfunc.add("ShowHappinessFragment");
-
+        justsabt=false;
         //runfunc.add("GetWorldDataForPlotting");
         //
         //UpdateAsyncInstance= (UpdateAsync) new UpdateAsync().execute();
@@ -308,7 +301,7 @@ private UpdateAsync UpdateAsyncInstance;
             long LastTimeInternet = QueryPreferences.getStoredLong(getActivity(), "LastTimeInternet");
            // runfunc.add("LoginToKinvey");
 
-            if (x22 - LastTimeInternet > 1000 * 60 * MinuteBetweenUpdates) {
+            if (x22 - LastTimeInternet > 1000 * 60 * DownloadMinute && justsabt==false) {
                 QueryPreferences.setStoredLong(getActivity(), "LastTimeInternet", x22);
                 if (ImMaster) {
                   //  RunTaskDOne.add()
@@ -316,10 +309,9 @@ private UpdateAsync UpdateAsyncInstance;
                     runfunc.add("ProcessWorldData");
                     runfunc.add("GetWorldDataforProcessing");
                 }
-
                 runfunc.add("GetWorldDataForPlotting");
             }
-            if (x22 - LastTimeInternet > 1000 * 60 * MinuteBetweenUpdatesforGraph) {
+            if (x22 - LastTimeInternet > 1000 * 60 * UploadMinute) {
                 runfunc.add("UploadPersonalDataToKinvey");
             }
         }
@@ -1158,6 +1150,7 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
                 Toast.LENGTH_SHORT).show();
        // updatedb2();
        */
+        justsabt=true;
         new UpdateAsync().execute();
 
     }

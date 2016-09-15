@@ -2,34 +2,108 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:weightSum="1">
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/deleteeverything"
         android:id="@+id/deleteeverything"
         android:layout_alignParentLeft="true"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical"
+        style="@style/MyButtonStyle"
+        android:layout_gravity="center_horizontal"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center_vertical|center_horizontal">
+        android:layout_height="75dp"
+        android:gravity="center_vertical|center_horizontal"
+        >
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/whereami"
             android:id="@+id/whereami"
-            android:layout_alignParentRight="true" />
+            style="@style/MyButtonStyle"
+            android:layout_alignParentRight="true"
+
+            />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/updatemyplace"
             android:id="@+id/updatemyplace"
-            android:layout_alignParentRight="true" />
+            style="@style/MyButtonStyle"
+            android:layout_alignParentRight="true"
+
+          />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="UploadMinute: "
+                android:id="@+id/textView4"
+                style="@style/MyButtonStyle"
+                android:layout_gravity="center"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="10"
+                android:inputType="number"
+                android:id="@+id/textViewUploadMinute"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="DownloadMinute: "
+                android:id="@+id/textView3"
+                style="@style/MyButtonStyle"
+                android:layout_gravity="center"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="20"
+                android:inputType="number"
+                android:id="@+id/textViewDownloadMinute"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
