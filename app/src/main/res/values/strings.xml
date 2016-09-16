@@ -38,6 +38,17 @@
     <string name="day">
 روز
     </string>
+    <string-array name="vahedezaman">
+        <item>@string/daghighe</item>
+        <item>@string/saat</item>
+        <item>@string/day</item>
+        <item>@string/maah</item>
+    </string-array>
+    <string-array name="chekasi">
+        <item>@string/man</item>
+        <item>@string/kol</item>
+        <item>@string/region</item>
+    </string-array>
     <string name="nodata">
         داده ای برای ترسیم وجود ندارد.
     </string>
@@ -164,10 +175,19 @@
 <string name="IranAmarDay">
         کل ایران در طول روز چقدر خوشحال است
     </string>
-    <string name="Why1">چیزهایی که باعث خوشحالی ات بوده است</string>
-    <string name="Why2">چیزهایی که باعث خوشحالی ایرانی ها بوده است</string>
+    <string name=
+                "Why1">
+        عوامل تاثیرگذار در روحیه من
+    </string>
+    <string name=
+                "Why2">
+        عوامل تاثیرگذار در روحیه ایرانی ها
+    </string>
     <string name="TSPersThisWeek">این هفته چقدر خوشحال بودی</string>
     <string name="TSWThisWeek">ایران این هفته چقدر خوشحال بود</string>
+    <string name="mizankhoshhali">
+        میزان خوشحالی
+    </string>
 
 
     <string-array name="conv_array">
@@ -190,5 +210,39 @@
             @string/TSWThisWeek
         </item>
     </string-array>
-
+<string name="parirooz">
+    پریروز
+</string>
+     <string name="khoshhali">
+    میزان خوشحالی
+</string>
+    <string name="dartoole">
+    در طول
+</string>
+    <string name="khoshhalidartoole">
+    خوشحالی در طول
+</string>
+      <string name="haiemontahibealan">
+ های مختلف منتهی به این لحظه
+    </string>
+       <string name="commentzirenemoodarTS">
+ هر چه به سمت راست نمودار می رویم به امروز نزدیک تر می شویم
+    </string>
+    <string name="emrooz">امروز</string>
+    <string name="dirooz">دیروز</string>
+    <string name="amarcommentgraph1">
+        میزان خوشحالی در
+    </string>
+        <string name="amarcommentgraph2">
+های مختلف یک
+    </string>
+    <string name="maah">ماه</string>
+    <string name="miangin">
+        (به طور میانگین)
+    </string>
+    <string name="shab">شب</string>
+    <string name="zohr">ظهر</string>
+    <string name="sobh">صبح</string>
+    <string name="ghoroob">غروب</string>
+    <string name="avamel">عوامل تاثیرگذار در روحیه</string>
 </resources>

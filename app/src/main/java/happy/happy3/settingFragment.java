@@ -73,7 +73,13 @@ public class settingFragment extends Fragment {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				int m1=Integer.parseInt(textViewUploadMinute.getText().toString());
+				String temp20=textViewDownloadMinute.getText().toString();
+				int m1;
+				if(temp20.equals("")){
+					m1=0;
+				}else{
+					m1=Integer.parseInt(temp20);
+				}
 				new MainFragment().UploadMinute=m1;
 				QueryPreferences.setStoredInt(getActivity(), "UploadMinute", m1);
 			}
@@ -97,7 +103,14 @@ public class settingFragment extends Fragment {
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				int m1=Integer.parseInt(textViewDownloadMinute.getText().toString());
+				String temp20=textViewDownloadMinute.getText().toString();
+				int m1;
+				if(temp20.equals("")){
+					m1=0;
+				}else{
+					m1=Integer.parseInt(temp20);
+				}
+
 				new MainFragment().DownloadMinute=m1;
 				QueryPreferences.setStoredInt(getActivity(), "DownloadMinute", m1);
 			}
