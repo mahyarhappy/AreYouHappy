@@ -2,9 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical" android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:weightSum="1"
 
-              >
+    >
 
 
     <LinearLayout
@@ -13,137 +12,146 @@
         android:layout_height="wrap_content"
 
         >
-        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:id="@+id/radioGroupsincewhen"
-            android:layout_weight="5" >
 
-            <RadioButton
+
+
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:id="@+id/radio_TarikhcheOrAmar"
+
+                    android:layout_weight="5">
+            <android.support.v7.widget.AppCompatRadioButton android:id="@+id/radio_tarikhche"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="@string/tarikhche"
+                                                            android:onClick="onRadioButtonClicked"
+                                                            android:checked="true"
+
+
+                />
+            <android.support.v7.widget.AppCompatRadioButton android:id="@+id/radio_amar"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="@string/amar"
+
+                                                            android:onClick="onRadioButtonClicked"
+                                                            android:checked="false" />
+            <android.support.v7.widget.AppCompatRadioButton android:id="@+id/radio_chera"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="@string/chera"
+                                                            android:onClick="onRadioButtonClicked"
+
+                                                            android:checked="false" />
+
+        </RadioGroup>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:id="@+id/radio_who"
+                    android:layout_weight="5">
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/man"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/man"
+                android:onClick="onRadioButtonClicked"
+
+                android:checked="true"/>
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/kol"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/kol"
+                android:onClick="onRadioButtonClicked"
+
+                android:checked="false"/>
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/region"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/region"
+                android:onClick="onRadioButtonClicked"
+
+                android:checked="false"/>
+
+        </RadioGroup>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:id="@+id/radio_mh"
+
+
+                    android:layout_weight="5">
+            <android.support.v7.widget.AppCompatRadioButton android:id="@+id/radio_min"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="@string/daghighe"
+                                                            android:onClick="onRadioButtonClicked"
+                                                            android:checked="false"
+
+
+                />
+            <android.support.v7.widget.AppCompatRadioButton android:id="@+id/radio_hour"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="@string/saat"
+                                                            android:onClick="onRadioButtonClicked"
+
+                                                            android:checked="true" />
+            <android.support.v7.widget.AppCompatRadioButton android:id="@+id/radio_day"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="wrap_content"
+                                                            android:text="@string/day"
+                                                            android:onClick="onRadioButtonClicked"
+
+                                                            android:checked="false" />
+
+
+        </RadioGroup>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:id="@+id/radioGroupsincewhen"
+                    android:layout_weight="5" >
+
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/azyekhaftepish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/azyekhaftepish"
+
                 android:onClick="onRadioButtonClicked"
                 android:checked="false" />
 
 
 
-            <RadioButton
+            <android.support.v7.widget.AppCompatRadioButton
+
                 android:id="@+id/azyekmahepish"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/azyekmahepish"
                 android:checked="false" />
-            <RadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/hamezamanha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/hamezamanha"
                 android:onClick="onRadioButtonClicked"
                 android:checked="true"
-                android:buttonTint="@color/colorAccent"/>
-        </RadioGroup>
-
-        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:id="@+id/radio_mh"
-
-
-            android:layout_weight="5">
-            <RadioButton android:id="@+id/radio_min"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/daghighe"
-                android:onClick="onRadioButtonClicked"
-                android:checked="false"
-
-
                 />
-            <RadioButton android:id="@+id/radio_hour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/saat"
-                android:onClick="onRadioButtonClicked"
-                android:checked="true" />
-            <RadioButton android:id="@+id/radio_day"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/day"
-                android:onClick="onRadioButtonClicked"
-                android:checked="false" />
-
-
-        </RadioGroup>
-
-        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:id="@+id/radio_who"
-                    android:layout_weight="5">
-            <RadioButton
-                android:id="@+id/man"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/man"
-                android:onClick="onRadioButtonClicked"
-                android:checked="true"/>
-            <RadioButton
-                android:id="@+id/kol"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/kol"
-                android:onClick="onRadioButtonClicked"
-                android:checked="false"/>
-
-            <RadioButton
-                android:id="@+id/region"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/region"
-                android:onClick="onRadioButtonClicked"
-                android:checked="false"/>
-
-        </RadioGroup>
-
-        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:id="@+id/radio_TarikhcheOrAmar"
-
-                    android:layout_weight="5">
-            <RadioButton android:id="@+id/radio_tarikhche"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tarikhche"
-                android:onClick="onRadioButtonClicked"
-                android:checked="true"
-
-
-                />
-            <RadioButton android:id="@+id/radio_amar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/amar"
-                android:onClick="onRadioButtonClicked"
-                android:checked="false" />
-            <RadioButton android:id="@+id/radio_chera"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:text="@string/chera"
-                         android:onClick="onRadioButtonClicked"
-                         android:checked="false" />
-
         </RadioGroup>
 
     </LinearLayout>
@@ -151,7 +159,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="350dp">
+        android:layout_height="308dp">
 
         <LinearLayout
             android:orientation="vertical"
@@ -215,13 +223,14 @@
     </LinearLayout>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="342dp"
+        android:layout_height="match_parent"
         android:text="Large Text"
         android:id="@+id/onvanexx"
 
-        android:layout_gravity="center"
+        android:layout_gravity="center|right"
 
-        />
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginRight="8dp"/>
 
 </LinearLayout>

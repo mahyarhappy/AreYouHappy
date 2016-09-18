@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +78,13 @@ public class ShowHappiness extends Fragment {
     private String sobh;
     private String ghoroob;
     private String avamel;
+    private int ostan1;
+    private long lasttimepassednotconverted;
+Integer zamanhaMs;
+    private AppCompatRadioButton region1;
+    private AppCompatRadioButton min1;
+    private AppCompatRadioButton hour1;
+    private AppCompatRadioButton day1;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +103,7 @@ public class ShowHappiness extends Fragment {
         sobh = getResources().getString(R.string.sobh);
         ghoroob= getResources().getString(R.string.ghoroob);
         avamel= getResources().getString(R.string.avamel);
+        ostan1 = new MainFragment().ostan;
 //        minhour=1000*60.0*60*24;
 //here the Fragment does not get inflated! there is no setContentView
     }
@@ -107,6 +116,10 @@ public class ShowHappiness extends Fragment {
         radiomh=(RadioGroup)v.findViewById(R.id.radio_mh);
         radiowho=(RadioGroup)v.findViewById(R.id.radio_who);
         radiofromwhen = (RadioGroup) v.findViewById(R.id.radioGroupsincewhen);
+        region1=(AppCompatRadioButton) v.findViewById(R.id.region);
+        min1=(AppCompatRadioButton) v.findViewById(R.id.radio_min);
+        hour1=(AppCompatRadioButton) v.findViewById(R.id.radio_hour);
+        day1=(AppCompatRadioButton) v.findViewById(R.id.radio_day);
         chartcontainer = (LinearLayout) v.findViewById(R.id.chartcontainer);
        onvanex2= (TextView)v.findViewById(R.id.onvanexx);
 
@@ -137,7 +150,7 @@ public class ShowHappiness extends Fragment {
             x3=QueryPreferences.getStoredInt(getActivity(),"DefaultWho");
         }
         if(x4==-1){
-            QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.kol);
+            QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.hamezamanha);
             x4=QueryPreferences.getStoredInt(getActivity(),"FromWhen");
         }
 
@@ -155,6 +168,10 @@ public class ShowHappiness extends Fragment {
         if(x4!=-1){
             radiofromwhen.check(x4);
         }
+
+
+
+
        drawchart(v, inflater,  container);
 
         //QueryPreferences.getStoredInt(getActivity(),"DefaultTime",radiomh.getCheckedRadioButtonId());
@@ -182,12 +199,24 @@ public class ShowHappiness extends Fragment {
                 drawchart(v, inflater,  container);
             }
         });
+        radiofromwhen.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                QueryPreferences.setStoredInt(getActivity(),"FromWhen",radiofromwhen.getCheckedRadioButtonId());
 
+                drawchart(v, inflater,  container);
+            }
+        });
       //  Integer DefaultTime = QueryPreferences.getStoredInt(getActivity(),"DefaultTime");
 
         return v;
     }
-private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
+
+    private void computezaman() {
+
+    }
+
+    private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
     onvanex2.setText("");
     long lasttimepassed = 0;
     whichSelected();
@@ -211,6 +240,13 @@ private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
     Integer IsTaikhche=-10;
     Cursor cursor1 = null;
     if(radioTarikhcheOrAmar.getCheckedRadioButtonId()== R.id.radio_tarikhche){
+        radiofromwhen.setVisibility(View.VISIBLE);
+        radiomh.setVisibility(View.VISIBLE);
+        region1.setVisibility(View.VISIBLE);
+        min1.setVisibility(View.VISIBLE);
+        min1.setText(getActivity().getResources().getString(R.string.daghighe));
+        hour1.setText(getActivity().getResources().getString(R.string.saat));
+        day1.setText(getActivity().getResources().getString(R.string.day));
         IsTaikhche=1;
 
         onvanex2.setText(khoshhali+" "+chekasi[whoindex]+" "+dartoole+" "+vahedezaman[WhichMode]+" "+haiemontahibealan+
@@ -218,23 +254,36 @@ private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
       //  onvanex2.setText("khoshhali dar toole zaman("+new MainFragment().ClockNames[WhichMode]+")");
         if(radiowho.getCheckedRadioButtonId()==R.id.man){
             cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBase where type = " + yy, null);
-        }else if(radiowho.getCheckedRadioButtonId()==R.id.kol ||radiowho.getCheckedRadioButtonId()==R.id.region ){
+        }else if(radiowho.getCheckedRadioButtonId()==R.id.kol  ){
             cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesAllPeople where type = " + yy, null);
+        }else if(radiowho.getCheckedRadioButtonId()==R.id.region ){
+            cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesOstanAllPeople where type = " + yy+" AND ostan ="+ostan1, null);
         }
 
     }else if (radioTarikhcheOrAmar.getCheckedRadioButtonId()== R.id.radio_amar){
+        min1.setText(getActivity().getResources().getString(R.string.amardaghighe));
+        hour1.setText(getActivity().getResources().getString(R.string.amarsaat));
+        day1.setText(getActivity().getResources().getString(R.string.amarday));
+        min1.setVisibility(View.INVISIBLE);
         IsTaikhche=0;
-
+        radiofromwhen.setVisibility(View.INVISIBLE);
+        radiomh.setVisibility(View.VISIBLE);
+        region1.setVisibility(View.VISIBLE);
         onvanex2.setText(khoshhali+" "+chekasi[whoindex]+" "+
                 dartoole+" "+vahedezaman[WhichMode]+" "+
                 amarcommentgraph2+" "+vahedezaman[WhichMode+1]+System.getProperty("line.separator")+miangin);
         if(radiowho.getCheckedRadioButtonId()==R.id.man){
             cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseSummary where type = " + yy, null);
-        }else if(radiowho.getCheckedRadioButtonId()==R.id.kol ||radiowho.getCheckedRadioButtonId()==R.id.region ){
+        }else if(radiowho.getCheckedRadioButtonId()==R.id.kol ){
             cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesAllPeopleSummary where type = " + yy, null);
+        }else if(radiowho.getCheckedRadioButtonId()==R.id.region ){
+            cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesOstanAllPeopleSummary where type = " + yy+" AND ostan ="+ostan1, null);
         }
 
     }else if (radioTarikhcheOrAmar.getCheckedRadioButtonId()== R.id.radio_chera){
+        radiofromwhen.setVisibility(View.INVISIBLE);
+        radiomh.setVisibility(View.INVISIBLE);
+        region1.setVisibility(View.INVISIBLE);
         //cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseChera", null);
         IsTaikhche=-1;
     }
@@ -256,14 +305,39 @@ private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
             Calendar cc = GregorianCalendar.getInstance();
            // ContentValues CurrentTimeValue =new MainFragment().CurrentTime();
             lasttimepassed=cc.getTimeInMillis();// CurrentTimeValue.getAsLong("date1");
+            lasttimepassednotconverted=lasttimepassed;
             lasttimepassed= new MainFragment().convert1(lasttimepassed,WhichMode);
 
             try {
+                String state2="";
+                if (IsTaikhche == 1) {
+
+                    if (radiofromwhen.getCheckedRadioButtonId() == R.id.hamezamanha) {
+                        state2="hamezamanha";
+                    } else if (radiofromwhen.getCheckedRadioButtonId() == R.id.azyekhaftepish) {
+                        state2="azyekhaftepish";
+                    }else if (radiofromwhen.getCheckedRadioButtonId() == R.id.azyekmahepish) {
+                        state2 = "azyekmahepish";
+
+                    }
+                }
                 while (!cursor.isAfterLast()) {
                     double rating = cursor.getDouble(cursor.getColumnIndex("rating"));
                     if (IsTaikhche == 1) {
                         long timepassed = cursor.getLong(cursor.getColumnIndex("xlabel"));
-                        entries.add(new Entry(timepassed - lasttimepassed, (float) rating));
+                        long date14 = cursor.getLong(cursor.getColumnIndex("date1"));
+                        boolean letadd=false;
+                        if (  state2.equals("hamezamanha")) {
+                            letadd=true;
+                        } else if (  state2.equals("azyekhaftepish") && lasttimepassednotconverted-date14<= 1000*60*60*24*7L) {
+                            letadd=true;
+                        }else if (   state2.equals("azyekmahepish") && lasttimepassednotconverted-date14<= 1000*60*60*24*31L) {
+                            letadd=true;
+                        }
+                        if (letadd) {
+                            entries.add(new Entry(timepassed - lasttimepassed, (float) rating));
+                        }
+
                     } else if (IsTaikhche == 0) {
                         int IndexInPeriod = cursor.getInt(cursor.getColumnIndex("IndexInPeriod"));
                         entries.add(new Entry(IndexInPeriod, (float) rating));
@@ -457,7 +531,8 @@ int percenttemp=sp1.getPercent(i);
                     PieDataSet dataset = new PieDataSet(entries2, "o");
                     dataset.setColors(ColorTemplate.COLORFUL_COLORS);
                     PieData data = new PieData(dataset);
-                    data.setValueTextSize(40f);
+                    data.setValueTextSize(30f);
+                    data.setValueTextSize(30f);
 
                     //     data.setValueTypeface(mTfLight);
                     data.setValueTextColor(Color.BLACK);

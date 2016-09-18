@@ -1100,5 +1100,122 @@ public void DownloadFromKenvey() {
     }
 
 
+
+/*
+
+	public class DownloadFromKenvey2 extends AsyncTask<Void, Void, Boolean> {
+		// Flag for login flow
+		private boolean flag ;
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			//EventEntityTimeSeries events = new EventEntityTimeSeries();
+			final AsyncAppData<EventEntityTimeSeries> myevents = mKinveyClient.appData("TSWorldTemp", EventEntityTimeSeries.class);
+			//The EventEntity class is defined above
+			//AsyncAppData<EventEntity> myevents = mKinveyClient.appData("events", EventEntity.class);
+			myevents.get(new KinveyListCallback<EventEntityTimeSeries>() {
+				@Override
+				public void onSuccess(EventEntityTimeSeries[] result) {
+					Log.v("TAG", "received "+ result.length + " events");
+					mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeopleTemp", null, null);
+					ContentValues cv=new ContentValues() ;
+					for (EventEntityTimeSeries x1 : result){
+						cv.put("rating",(Double) x1.get("rating"));
+						cv.put("minute",(Integer) x1.get("minute"));
+						cv.put("minutecut",(Integer) x1.get("minutecut"));
+						cv.put("hour",(Integer) x1.get("hour"));
+						cv.put("hourcut",(Integer) x1.get("hourcut"));
+						cv.put("day",(Integer) x1.get("day"));
+						cv.put("month",(Integer) x1.get("month"));
+						cv.put("year",(Integer) x1.get("year"));
+						cv.put("type",(Integer) x1.get("type"));
+						cv.put("IndexInPeriod",(Integer) x1.get("IndexInPeriod"));
+						cv.put("latitude",(Double) x1.get("latitude"));
+						cv.put("longitude",(Double) x1.get("longitude"));
+						cv.put("LastData",(Integer) x1.get("LastData"));
+						String eventId =(String) x1.get("_id");
+						Log.i("cv",cv.toString());
+						mAdvDatabase.insert("HappyDataBaseTimeSeriesAllPeopleTemp", null, cv);
+					}
+					flag=true;
+//					DownloadFromKenvey3 task = new DownloadFromKenvey3();
+//					task.execute();
+
+				}
+				@Override
+				public void onFailure(Throwable error)
+				{
+					Log.e("TAG", "failed to fetch all", error);
+					flag=false;
+				}
+		});
+			//return flag;
+			return true;
+		}
+		@Override
+		protected void onPostExecute(final Boolean success) {
+
+			if ( flag==true) {
+			//	DownloadFromKenvey3 task = new DownloadFromKenvey3();
+			//	task.execute();
+			} else {
+			}
+		}
+		@Override
+		protected void onCancelled() {
+		}
+	}
+
+
+	public class DownloadFromKenvey3 extends AsyncTask<Void, Void, Boolean> {
+		// Flag for login flow
+		private boolean flag ;
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			final AsyncAppData<EventEntityTimeSeries> myevents = mKinveyClient.appData("TSWorldTemp", EventEntityTimeSeries.class);
+			Query query3 = mKinveyClient.query();
+			myevents.delete(query3, new KinveyDeleteCallback() {
+				@Override
+				public void onSuccess(KinveyDeleteResponse response) {
+					Log.v("TAG", "deleted successfully");
+					flag=true;
+					mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
+					updatedb("HappyDataBaseTimeSeriesAllPeopleTemp","HappyDataBaseTimeSeriesAllPeople");
+		//			UploadToKenvey();
+
+
+				}
+				public void onFailure(Throwable error) {
+					Log.e("TAG", "failed to delete ", error);
+					flag=false;
+				}
+			});
+
+
+
+			return flag;
+		}
+		@Override
+		protected void onPostExecute(final Boolean success) {
+
+			if (success &flag) {
+
+				mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
+				updatedb("HappyDataBaseTimeSeriesAllPeopleTemp","HappyDataBaseTimeSeriesAllPeople");
+				UploadToKenvey();
+			} else {
+			}
+		}
+		@Override
+		protected void onCancelled() {
+		}
+	}
+
+
+
+
+		}
+
+
+
 */
 }

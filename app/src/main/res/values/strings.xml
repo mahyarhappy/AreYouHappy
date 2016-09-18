@@ -39,11 +39,23 @@
 روز
     </string>
     <string-array name="vahedezaman">
-        <item>@string/daghighe</item>
-        <item>@string/saat</item>
-        <item>@string/day</item>
-        <item>@string/maah</item>
-    </string-array>
+    <item>@string/daghighe</item>
+    <item>@string/saat</item>
+    <item>@string/day</item>
+    <item>@string/maah</item>
+</string-array>
+
+
+ <string name="amarsaat">
+        در یک روز
+    </string>
+    <string name="amardaghighe">
+در یک ساعت
+    </string>
+    <string name="amarday">
+در یک ماه
+    </string>
+
     <string-array name="chekasi">
         <item>@string/man</item>
         <item>@string/kol</item>
@@ -53,10 +65,10 @@
         داده ای برای ترسیم وجود ندارد.
     </string>
     <string name="amar">
-        آمار
+میانگین خوشحالی
     </string>
     <string name="tarikhche">
-        سری زمانی
+        روند خوشحالی اخیر
     </string>
      <string name="cheghadrkhoshhaliHint">
 چقدر خوشحالی؟
@@ -164,7 +176,9 @@
     <string name="kol">
         کل ایران
     </string>
-    <string name="region">حوالی من</string>
+    <string name="region">
+        استان من
+    </string>
     <string name="azyekmahepish">از یک ماه پیش</string>
     <string name="hamezamanha">همه زمان ها</string>
     <string name="azyekhaftepish">از یک هفته پیش</string>
@@ -245,4 +259,17 @@
     <string name="sobh">صبح</string>
     <string name="ghoroob">غروب</string>
     <string name="avamel">عوامل تاثیرگذار در روحیه</string>
+    <string name="chooseostan">استان خود را انتخاب کنید</string>
+    <string name="selectyourostan">استان خود را انتخاب کنید</string>
+    <string-array name="ostanha">
+    <item>
+        تهران
+    </item>
+        <item>
+            اصفهان
+        </item>
+        <item>
+            آذربایجان شرقی
+        </item>
+    </string-array>
 </resources>

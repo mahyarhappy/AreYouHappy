@@ -77,7 +77,7 @@ public class MainFragment extends Fragment implements LocationListener, GoogleAp
     private String your_app_secret = "cd660e010c734b908d0c7720802aef5c";
     private String your_app_mastersecret = "0412a3c640df46a79352026684f1826c";
 
-
+public static int ostan;
     public int minutecutConstant = 2;
     public int hourcutConstant = 3;
     static int DownloadMinute ;//1/60;
@@ -133,6 +133,7 @@ private UpdateAsync UpdateAsyncInstance;
     private int mTries = 0;
     private ConnectionQuality mConnectionClass = ConnectionQuality.UNKNOWN;
     private static boolean justsabt;
+    private boolean FirstStartOfProgram;
 
 
     //static SQLiteDatabase mAdvDatabase;
@@ -143,6 +144,8 @@ private UpdateAsync UpdateAsyncInstance;
         super.onCreate(savedInstanceState);
         ImMaster= PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("ImMaster", false);
         WorkOffline= PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("WorkOffline", false);
+        ostan=PreferenceManager.getDefaultSharedPreferences(context1)
+                .getInt("ostan", -1);
         font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/BNAZANIN.ttf");
        //
 //		mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Temp databse
@@ -257,6 +260,22 @@ private UpdateAsync UpdateAsyncInstance;
                 PorterDuff.Mode.SRC_ATOP); // for filled stars
         stars.getDrawable(0).setColorFilter(ContextCompat.getColor(context1,R.color.colorAccentVeryVeryLow),
                 PorterDuff.Mode.SRC_ATOP); // for filled stars
+
+
+        FirstStartOfProgram= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("FirstStartOfProgram", true);
+if(FirstStartOfProgram){
+    FirstStartOfProgram=false;
+    PreferenceManager.getDefaultSharedPreferences(context1)
+            .edit()
+            .putBoolean("FirstStartOfProgram", false)
+            .apply();
+
+
+    getActivity().getSupportFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, new chooseostanfragment())
+            .addToBackStack(null)
+            .commit();
+}
 
         return v;
     }
@@ -377,8 +396,8 @@ String dialogstring;
     }
     public void ProcessPersonalData() {
 
-        updatedb("HappyDataBaseTemp", "HappyDataBase", "HappyDataBaseSummary", true);
-        Updatesummary("HappyDataBaseTemp", "HappyDataBase", "HappyDataBaseSummary");
+        updatedb("HappyDataBaseTemp", "HappyDataBase", "man");
+        Updatesummary( "HappyDataBase", "HappyDataBaseSummary","man");
 
     }
     public void UploadPersonalDataToKinvey() {
@@ -421,6 +440,7 @@ String dialogstring;
                         event.set("IndexInPeriod", IndexInPeriod22);
                         event.set("latitude", cursor.getDouble(cursor.getColumnIndex("latitude")));
                         event.set("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
+                        event.set("ostan", cursor.getInt(cursor.getColumnIndex("ostan")));
                         UploadEvent(event, "SummaryPersonal");
                         //UploadEvent(event, "WorldSummaryTemp");
                         cursor.moveToNext();
@@ -461,6 +481,7 @@ String dialogstring;
                     Integer lastdata1 = cursor.getInt(cursor.getColumnIndex("LastData"));
                     Integer WhyPosition1 = cursor.getInt(cursor.getColumnIndex("WhyPosition"));
                     event1.set("WhyPosition", cursor.getInt(cursor.getColumnIndex("WhyPosition")));
+                    event1.set("ostan", cursor.getInt(cursor.getColumnIndex("ostan")));
                     event1.set("LastData", lastdata1);
                     if (LetUploadPersonal) {
                         UploadEvent(event1, "TSPersonal");
@@ -559,6 +580,8 @@ String sasdasd=mKinveyClient.user().getId();
                         cv.put("latitude", (Double) x1.get("latitude"));
                         cv.put("longitude", (Double) x1.get("longitude"));
                         cv.put("LastData", (Integer) x1.get("LastData"));
+                        cv.put("ostan", (Integer) x1.get("ostan"));
+                        cv.put("date1", (Long) x1.get("date1"));
                         cv.put("xlabel", (Long) x1.get("xlabel"));
                         String eventId = (String) x1.get("_id");
                         mAdvDatabase.insert("HappyDataBaseTimeSeriesAllPeople", null, cv);
@@ -623,6 +646,7 @@ String sasdasd=mKinveyClient.user().getId();
         });
     }
     public void GetWorldDataForPlotting3(){
+        runfunc.add("GetWorldDataForPlotting4");
         final AsyncAppData<EventEntity > myevents = mKinveyClient.appData("SummaryWorld", EventEntity .class);
         myevents.get(new KinveyListCallback<EventEntity >() {
             @Override
@@ -636,7 +660,81 @@ String sasdasd=mKinveyClient.user().getId();
                     cv.put("IndexInPeriod", (Integer) x1.get("IndexInPeriod"));
                     cv.put("latitude", (Double) x1.get("latitude"));
                     cv.put("longitude", (Double) x1.get("longitude"));
+                    cv.put("ostan", (Integer) x1.get("ostan"));
                     mAdvDatabase.insert("HappyDataBaseTimeSeriesAllPeopleSummary", null, cv);
+                }
+
+                TaskDone();
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                Log.e("TAG", "failed to fetch all", error);
+                TaskDone();
+            }
+
+
+        });
+
+    }
+    public void GetWorldDataForPlotting4(){
+        runfunc.add("GetWorldDataForPlotting5");
+        final AsyncAppData<EventEntityTimeSeries> myevents = mKinveyClient.appData("TSWorldOstan", EventEntityTimeSeries.class);
+        myevents.get(new KinveyListCallback<EventEntityTimeSeries>() {
+            @Override
+            public void onSuccess(EventEntityTimeSeries[] result) {
+                Log.v("TAG", "received " + result.length + " events");
+                mAdvDatabase.delete("HappyDataBaseTimeSeriesOstanAllPeople", null, null);
+                ContentValues cv = new ContentValues();
+                for (EventEntityTimeSeries x1 : result) {
+                    cv.put("rating", (Double) x1.get("rating"));
+                    cv.put("minute", (Integer) x1.get("minute"));
+                    cv.put("minutecut", (Integer) x1.get("minutecut"));
+                    cv.put("hour", (Integer) x1.get("hour"));
+                    cv.put("hourcut", (Integer) x1.get("hourcut"));
+                    cv.put("day", (Integer) x1.get("day"));
+                    cv.put("month", (Integer) x1.get("month"));
+                    cv.put("year", (Integer) x1.get("year"));
+                    cv.put("type", (Integer) x1.get("type"));
+                    cv.put("IndexInPeriod", (Integer) x1.get("IndexInPeriod"));
+                    cv.put("latitude", (Double) x1.get("latitude"));
+                    cv.put("longitude", (Double) x1.get("longitude"));
+                    cv.put("LastData", (Integer) x1.get("LastData"));
+                    cv.put("date1", (Long) x1.get("date1"));
+                    cv.put("ostan", (Integer) x1.get("ostan"));
+                    cv.put("xlabel", (Long) x1.get("xlabel"));
+                    String eventId = (String) x1.get("_id");
+                    mAdvDatabase.insert("HappyDataBaseTimeSeriesOstanAllPeople", null, cv);
+                }
+
+                TaskDone();
+            }
+
+            @Override
+            public void onFailure(Throwable error) {
+                Log.e("TAG", "failed to fetch all", error);
+                TaskDone();
+            }
+
+
+        });
+    }
+    public void GetWorldDataForPlotting5(){
+        final AsyncAppData<EventEntity > myevents = mKinveyClient.appData("SummaryWorldOstan", EventEntity .class);
+        myevents.get(new KinveyListCallback<EventEntity >() {
+            @Override
+            public void onSuccess(EventEntity [] result) {
+                Log.v("TAG", "received " + result.length + " events");
+                mAdvDatabase.delete("HappyDataBaseTimeSeriesOstanAllPeopleSummary", null, null);
+                ContentValues cv = new ContentValues();
+                for (EventEntity x1 : result) {
+                    cv.put("rating", (Double) x1.get("rating"));
+                    cv.put("type", (Integer) x1.get("type"));
+                    cv.put("IndexInPeriod", (Integer) x1.get("IndexInPeriod"));
+                    cv.put("latitude", (Double) x1.get("latitude"));
+                    cv.put("longitude", (Double) x1.get("longitude"));
+                    cv.put("ostan", (Integer) x1.get("ostan"));
+                    mAdvDatabase.insert("HappyDataBaseTimeSeriesOstanAllPeopleSummary", null, cv);
                 }
 
                 TaskDone();
@@ -672,6 +770,7 @@ String sasdasd=mKinveyClient.user().getId();
                     cv.put("month", (Integer) x1.get("month"));
                     cv.put("year", (Integer) x1.get("year"));
                     cv.put("type", (Integer) x1.get("type"));
+                    cv.put("ostan", (Integer) x1.get("ostan"));
                     cv.put("IndexInPeriod", (Integer) x1.get("IndexInPeriod"));
                     cv.put("latitude", (Double) x1.get("latitude"));
                     cv.put("longitude", (Double) x1.get("longitude"));
@@ -679,6 +778,7 @@ String sasdasd=mKinveyClient.user().getId();
                     cv.put("date1", (Long) x1.get("date1"));
                     String eventId = (String) x1.get("_id");
                     mAdvDatabase.insert("HappyDataBaseTimeSeriesAllPeopleTemp", null, cv);
+                    mAdvDatabase.insert("HappyDataBaseTimeSeriesOstanAllPeopleTemp", null, cv);
                 }
                 /*
                 Query query3 = mKinveyClient.query();
@@ -765,13 +865,7 @@ String sasdasd=mKinveyClient.user().getId();
             }
         });
 
-
-        mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
-        updatedb("HappyDataBaseTimeSeriesAllPeopleTemp", "HappyDataBaseTimeSeriesAllPeople","HappyDataBaseTimeSeriesAllPeopleSummary",false);
-        //get Why
-        //New WorldSummaryData
-       // LoginToKinvey();
-        final AsyncAppData<EventEntityWhy> myevents42 = mKinveyClient.appData("SummaryWorld", EventEntityWhy.class);
+        final AsyncAppData<EventEntityTimeSeries> myevents42 = mKinveyClient.appData("SummaryWorldOstan", EventEntityTimeSeries.class);
          query3 = mKinveyClient.query();
         myevents42.delete(query3, new KinveyDeleteCallback() {
             @Override
@@ -785,8 +879,45 @@ String sasdasd=mKinveyClient.user().getId();
         });
 
 
+        final AsyncAppData<EventEntityTimeSeries> myevents43 = mKinveyClient.appData("TSWorldOstan", EventEntityTimeSeries.class);
+         query3 = mKinveyClient.query();
+        myevents43.delete(query3, new KinveyDeleteCallback() {
+            @Override
+            public void onSuccess(KinveyDeleteResponse response) {
+                Log.v("TAG", "deleted successfully");
+            }
+
+            public void onFailure(Throwable error) {
+                Log.e("TAG", "failed to delete ", error);
+            }
+        });
+
+
+        mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
+        mAdvDatabase.delete("HappyDataBaseTimeSeriesOstanAllPeople", null, null);
+        mAdvDatabase.delete("HappyDataBaseTimeSeriesOstanAllPeopleSummary", null, null);
+        updatedb("HappyDataBaseTimeSeriesAllPeopleTemp", "HappyDataBaseTimeSeriesAllPeople","kol");
+        updatedb("HappyDataBaseTimeSeriesOstanAllPeopleTemp", "HappyDataBaseTimeSeriesOstanAllPeople","ostan");
+        //get Why
+        //New WorldSummaryData
+       // LoginToKinvey();
+        final AsyncAppData<EventEntityWhy> myevents46 = mKinveyClient.appData("SummaryWorld", EventEntityWhy.class);
+         query3 = mKinveyClient.query();
+        myevents46.delete(query3, new KinveyDeleteCallback() {
+            @Override
+            public void onSuccess(KinveyDeleteResponse response) {
+                Log.v("TAG", "deleted successfully");
+            }
+
+            public void onFailure(Throwable error) {
+                Log.e("TAG", "failed to delete ", error);
+            }
+        });
+
+
         //	Updatesummary( InputTableName,  OutputTableName, OutputSummaryTableName);
-        Updatesummary("HappyDataBaseTimeSeriesAllPeopleTemp", "HappyDataBaseTimeSeriesAllPeople", "HappyDataBaseTimeSeriesAllPeopleSummary");
+        Updatesummary("HappyDataBaseTimeSeriesAllPeople", "HappyDataBaseTimeSeriesAllPeopleSummary","kol");
+        Updatesummary("HappyDataBaseTimeSeriesOstanAllPeople", "HappyDataBaseTimeSeriesOstanAllPeopleSummary","ostan");
 TaskDone();
     }
     public void UploadWorldDataToWorldKinvey() {
@@ -807,6 +938,7 @@ TaskDone();
                     event.set("IndexInPeriod", IndexInPeriod22);
                     event.set("latitude", cursor.getDouble(cursor.getColumnIndex("latitude")));
                     event.set("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
+                    event.set("ostan", cursor.getInt(cursor.getColumnIndex("ostan")));
                     UploadEvent(event, "SummaryWorld");
                     cursor.moveToNext();
                 }
@@ -814,45 +946,6 @@ TaskDone();
                 cursor.close();
             }
         }
-
-        /*
-         cursor1 = mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesAllPeople", null);
-         cursor = new CursorWrapper(cursor1);
-        cursor.moveToFirst();
-        if (!cursor.isAfterLast())//just to see if data is nonemoty. it does not loop in cursor here
-        {
-            try {
-                while (!cursor.isAfterLast()) {
-                    double rating22 = cursor.getDouble(cursor.getColumnIndex("rating"));
-                    EventEntityTimeSeries event1 = new EventEntityTimeSeries();
-                    event1.set("rating", cursor.getDouble(cursor.getColumnIndex("rating")));
-                    event1.set("minute", cursor.getInt(cursor.getColumnIndex("minute")));
-                    event1.set("minutecut", cursor.getInt(cursor.getColumnIndex("minutecut")));
-                    event1.set("hour", cursor.getInt(cursor.getColumnIndex("hour")));
-                    event1.set("hourcut", cursor.getInt(cursor.getColumnIndex("hourcut")));
-                    event1.set("day", cursor.getInt(cursor.getColumnIndex("day")));
-                    event1.set("month", cursor.getInt(cursor.getColumnIndex("month")));
-                    event1.set("year", cursor.getInt(cursor.getColumnIndex("year")));
-                    event1.set("type", cursor.getInt(cursor.getColumnIndex("type")));
-                    event1.set("IndexInPeriod", cursor.getInt(cursor.getColumnIndex("IndexInPeriod")));
-                    event1.set("latitude", cursor.getDouble(cursor.getColumnIndex("latitude")));
-                    event1.set("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
-                    event1.set("LastData", cursor.getInt(cursor.getColumnIndex("LastData")));
-                    event1.set("WhyPosition", cursor.getInt(cursor.getColumnIndex("WhyPosition")));
-                    //UploadEvent(event1, "TimeSeries");
-                    UploadEvent(event1, "TSWorld");
-                    cursor.moveToNext();
-                }
-            } finally {
-                cursor.close();
-            }
-            //   cursor1 = mAdvDatabase.rawQuery("SELECT * FROM HappyDataBase where LastData = 0 AND (isuploaded = 0 OR isuploaded IS NULL) AND (istemp = 0 OR istemp IS NULL)", null);
-            //mAdvDatabase.execSQL("update HappyDataBase set isuploaded=1 WHERE LastData = 0 AND (isuploaded = 0 OR isuploaded IS NULL) AND (istemp = 0 OR istemp IS NULL)");
-            //mAdvDatabase.execSQL("update HappyDataBase set isuploaded=1 WHERE " + quer1);
-            //mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
-            mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
-        }
-        */
 
         cursor1 = mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesAllPeople", null);
         cursor = new CursorWrapper(cursor1);
@@ -879,6 +972,7 @@ TaskDone();
                     event1.set("WhyPosition", cursor.getInt(cursor.getColumnIndex("WhyPosition")));
                     event1.set("date1", cursor.getLong(cursor.getColumnIndex("date1")));
                     event1.set("xlabel", cursor.getLong(cursor.getColumnIndex("xlabel")));
+                    event1.set("ostan", cursor.getInt(cursor.getColumnIndex("ostan")));
                     //UploadEvent(event1, "TimeSeries");
                     UploadEvent(event1, "TSWorld");
                     cursor.moveToNext();
@@ -894,6 +988,91 @@ TaskDone();
           //  mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
         }
 
+
+        //ppppppppppppppppppppppppppppppppppppppppppppppppp
+
+
+
+         cursor1 = mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesOstanAllPeopleSummary", null);
+         cursor = new CursorWrapper(cursor1);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast())//just to see if data is nonemoty. it does not loop in cursor here
+        {
+            try {
+                while (!cursor.isAfterLast()) {
+                    double rating22 = cursor.getDouble(cursor.getColumnIndex("rating"));
+                    Integer type22 = cursor.getInt(cursor.getColumnIndex("type"));
+                    Integer IndexInPeriod22 = cursor.getInt(cursor.getColumnIndex("IndexInPeriod"));
+                    EventEntity event8 = new EventEntity();
+                    event8.set("rating", rating22);
+                    event8.set("type", type22);
+                    event8.set("IndexInPeriod", IndexInPeriod22);
+                    event8.set("latitude", cursor.getDouble(cursor.getColumnIndex("latitude")));
+                    event8.set("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
+                    event8.set("ostan", cursor.getInt(cursor.getColumnIndex("ostan")));
+                    UploadEvent(event8, "SummaryWorldOstan");
+                    cursor.moveToNext();
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+
+        cursor1 = mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseTimeSeriesOstanAllPeople", null);
+        cursor = new CursorWrapper(cursor1);
+        cursor.moveToFirst();
+        if (!cursor.isAfterLast())//just to see if data is nonemoty. it does not loop in cursor here
+        {
+            try {
+                while (!cursor.isAfterLast()) {
+                    double rating22 = cursor.getDouble(cursor.getColumnIndex("rating"));
+                    EventEntityTimeSeries event1 = new EventEntityTimeSeries();
+                    event1.set("rating", cursor.getDouble(cursor.getColumnIndex("rating")));
+                    event1.set("minute", cursor.getInt(cursor.getColumnIndex("minute")));
+                    event1.set("minutecut", cursor.getInt(cursor.getColumnIndex("minutecut")));
+                    event1.set("hour", cursor.getInt(cursor.getColumnIndex("hour")));
+                    event1.set("hourcut", cursor.getInt(cursor.getColumnIndex("hourcut")));
+                    event1.set("day", cursor.getInt(cursor.getColumnIndex("day")));
+                    event1.set("month", cursor.getInt(cursor.getColumnIndex("month")));
+                    event1.set("year", cursor.getInt(cursor.getColumnIndex("year")));
+                    event1.set("type", cursor.getInt(cursor.getColumnIndex("type")));
+                    event1.set("IndexInPeriod", cursor.getInt(cursor.getColumnIndex("IndexInPeriod")));
+                    event1.set("latitude", cursor.getDouble(cursor.getColumnIndex("latitude")));
+                    event1.set("longitude", cursor.getDouble(cursor.getColumnIndex("longitude")));
+                    event1.set("LastData", cursor.getInt(cursor.getColumnIndex("LastData")));
+                    event1.set("WhyPosition", cursor.getInt(cursor.getColumnIndex("WhyPosition")));
+                    event1.set("date1", cursor.getLong(cursor.getColumnIndex("date1")));
+                    event1.set("xlabel", cursor.getLong(cursor.getColumnIndex("xlabel")));
+                    event1.set("ostan", cursor.getInt(cursor.getColumnIndex("ostan")));
+                    //UploadEvent(event1, "TimeSeries");
+                    UploadEvent(event1, "TSWorldOstan");
+                    cursor.moveToNext();
+                }
+            } finally {
+                cursor.close();
+            }
+            //   cursor1 = mAdvDatabase.rawQuery("SELECT * FROM HappyDataBase where LastData = 0 AND (isuploaded = 0 OR isuploaded IS NULL) AND (istemp = 0 OR istemp IS NULL)", null);
+            //mAdvDatabase.execSQL("update HappyDataBase set isuploaded=1 WHERE LastData = 0 AND (isuploaded = 0 OR isuploaded IS NULL) AND (istemp = 0 OR istemp IS NULL)");
+            //mAdvDatabase.execSQL("update HappyDataBase set isuploaded=1 WHERE " + quer1);
+            //mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
+
+            //  mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//ppppppppppppppppppppppppppppp
         final AsyncAppData<EventEntityWhy> myevents43 = mKinveyClient.appData("WhyWorld", EventEntityWhy.class);
         Query query3 = mKinveyClient.query();
 
@@ -919,7 +1098,13 @@ TaskDone();
 TaskDone();
         //sp2.makeallzero();
     }
-    public void updatedb(String InputTableName, String OutputTableName, String OutputSummaryTableName, boolean TurnToNext) {
+    public void updatedb(String InputTableName, String OutputTableName,String Who1) {
+       boolean TurnToNext;
+        if (Who1.equals("man")) {
+            TurnToNext=true;
+        }else{
+            TurnToNext=false;
+        }
         //boolean TurnToNext=true;
         ContentValues CurrentTimeValue = CurrentTime();
         for (int i1 = 0; i1 <= 2; i1 += 1) {
@@ -934,12 +1119,15 @@ TaskDone();
             if (!cursor.isAfterLast())//just to see if data is nonemoty. it does not loop in cursor here
             {
                 //Object year = CurrentTimeValue.get("year");
-                String q1 = "SELECT avg(rating) as rating, type , latitude , longitude  , minutecut , hourcut , WhyPosition , year , month ,  day , hour  , minute , max(date1) as date1  FROM " + InputTableName + " where type = " + Integer.toString(i1) + " GROUP BY year , month , day";
+                String q1 = "SELECT avg(rating) as rating, type , latitude , longitude  , minutecut , hourcut , WhyPosition , ostan , year , month ,  day , hour  , minute , max(date1) as date1  FROM " + InputTableName + " where type = " + Integer.toString(i1) + " GROUP BY year , month , day";
                 if (i1 == 0) {//minute
                     q1 += " , hour , minutecut";
                 }
                 if (i1 == 1) {//minute
                     q1 += " , hourcut";
+                }
+                if (Who1.equals("ostan")){
+                    q1 += " , ostan";
                 }
                 Cursor cursor2 = null;
                 cursor2 = mAdvDatabase.rawQuery(q1, null);
@@ -967,18 +1155,6 @@ TaskDone();
                                 timepassed = (long) Math.floor(date222 / (1000 * 60 * 60 * 24));
                             }
 
-
-
-/*
-int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
-							if (i1 == 0) {
-								timepassed = (int) Math.floor(timepassed / (1000 * 60 * minutecutConstant)) * minutecutConstant;
-							} else if (i1 == 1) {
-								timepassed = (int) Math.floor(timepassed / (1000 * 60 * 60 * hourcutConstant)) * hourcutConstant;
-							} else if (i1 == 2) {
-								timepassed = (int) Math.floor(timepassed / (1000 * 60 * 60 * 24));
-							}
-							*/
                             int ykjhkjh;
                             if(InputTableName.equals("HappyDataBaseTimeSeriesAllPeopleTemp")){
                                 Integer yeartemp3 = cursor2.getInt(cursor2.getColumnIndex("year"));
@@ -1082,19 +1258,30 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
 
         return values2;
     }
-    public void Updatesummary(String InputTableName, String OutputTableName, String OutputSummaryTableName) {
+    public void Updatesummary( String OutputTableName, String OutputSummaryTableName,String Who1) {
+
+
         ContentValues CurrentTimeValue = CurrentTime();
         //mAdvDatabase.delete("HappyDataBaseSummary", null, null);
         mAdvDatabase.delete(OutputSummaryTableName, null, null);
         for (int i1 = 0; i1 <= 2; i1 += 1) {
             //	Log.e(" salam", Integer.toString(i1));
             Cursor cursor1 = null;
+            String q1;
             // cursor1 = mAdvDatabase.rawQuery("SELECT avg(rating) as rating, IndexInPeriod , type FROM HappyDataBase where istemp = 0 AND type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod", null);
             if (IncludeAllGPS == true) {
-                cursor1 = mAdvDatabase.rawQuery("SELECT avg(rating) as rating, IndexInPeriod , type , latitude , longitude FROM " + OutputTableName + " where type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod", null);
+                q1="SELECT avg(rating) as rating, IndexInPeriod , type , ostan  , latitude , longitude FROM " + OutputTableName + " where type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod";
             } else {
-                cursor1 = mAdvDatabase.rawQuery("SELECT avg(rating) as rating, IndexInPeriod , type FROM " + OutputTableName + " where type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod", null);
+                q1="SELECT avg(rating) as rating, IndexInPeriod , type , ostan  FROM " + OutputTableName + " where type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod";
             }
+
+            if (Who1.equals("ostan")) {
+              q1+=" , ostan";
+            }else{
+
+            }
+            cursor1 = mAdvDatabase.rawQuery(q1, null);
+
             Cursor cursor = new CursorWrapper(cursor1);
             cursor.moveToFirst();
             int MakeItUnTemp = 0;
@@ -1131,6 +1318,7 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
         values2.put("rating", NumStars);
         values2.put("type", -1);
         values2.put("WhyPosition", WhyPosition);
+        values2.put("ostan", ostan);
         //sp sp1=new sp(getActivity(),sparray);
         sp sp1 = new sp(getActivity(), 1);
         sp1.increment(WhyPosition);
@@ -1768,9 +1956,15 @@ int timepassed = (int) cursor2.getInt(cursor.getColumnIndex("date1"));
                 case "updatedb4":
                     updatedb4();
                     break;
-                case "UploadPersonalDataToKinvey":
-                    UploadPersonalDataToKinvey();
+                case "GetWorldDataForPlotting4":
+                    GetWorldDataForPlotting4();
                     break;
+                case "GetWorldDataForPlotting5":
+                    GetWorldDataForPlotting5();
+                break;
+                case "UploadPersonalDataToKinvey":
+                UploadPersonalDataToKinvey();
+                break;
                 default:
                     Log.e("errorrrr","no function to run  "+temp);
             }

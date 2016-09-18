@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/Toosi</item>
         <item name="colorPrimaryDark">@color/Toosi</item>
        <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="colorControlNormal">@android:color/black</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
 <!--        <item name="android:windowTitleSize">0dp</item> -->
     </style>
     <style name="StarRatingBar" parent="@android:style/Widget.RatingBar">

@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final int VERSION = 11;
+    private static final int VERSION = 16;
     private static final String DATABASE_NAME = "HappyDataBaseTemp.db";
     String HappyDataBaseScheme="(" +
             " _id integer primary key autoincrement, " +
@@ -27,6 +27,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "longitude INTEGER"+ ", " +
             "isuploaded INTEGER"+ ", " +
             "WhyPosition INTEGER"+ ", " +
+            "ostan INTEGER"+ ", " +
             "type INTEGER"+  ")";
     String HappyDataBaseSummaryScheme="(" +
             " _id integer primary key autoincrement, " +
@@ -36,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "longitude INTEGER"+ ", " +
             "isuploaded INTEGER"+ ", " +
             "WhyPosition INTEGER"+ ", " +
+            "ostan INTEGER"+ ", " +
             "type INTEGER"+  ")";
     private String DATABASE_TableName_Chosen;
     private String DATABASE_File_NAME_Chosen;
@@ -68,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
              "longitude INTEGER"+ ", " +
                 "isuploaded INTEGER"+ ", " +
                 "WhyPosition INTEGER"+ ", " +
+                "ostan INTEGER"+ ", " +
                 "type INTEGER"+  ")"
         );
         /*
@@ -83,10 +86,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         );
         */
         db.execSQL("create table " + "HappyDataBaseSummary" + HappyDataBaseSummaryScheme);
-        db.execSQL("create table " + "HappyDataBaseTimeSeriesAllPeopleSummary" + HappyDataBaseSummaryScheme);
         db.execSQL("create table " + "HappyDataBase" + HappyDataBaseScheme );
+
+        db.execSQL("create table " + "HappyDataBaseTimeSeriesAllPeopleSummary" + HappyDataBaseSummaryScheme);
         db.execSQL("create table " + "HappyDataBaseTimeSeriesAllPeopleTemp" + HappyDataBaseScheme );
         db.execSQL("create table " + "HappyDataBaseTimeSeriesAllPeople" + HappyDataBaseScheme );
+
+        db.execSQL("create table " + "HappyDataBaseTimeSeriesOstanAllPeopleSummary" + HappyDataBaseSummaryScheme);
+        db.execSQL("create table " + "HappyDataBaseTimeSeriesOstanAllPeopleTemp" + HappyDataBaseScheme );
+        db.execSQL("create table " + "HappyDataBaseTimeSeriesOstanAllPeople" + HappyDataBaseScheme );
+        db.execSQL("create table " + "HappyDataBaseTimeSeriesMyOstanAllPeople" + HappyDataBaseScheme);
+        db.execSQL("create table " + "HappyDataBaseTimeSeriesMyOstanAllPeopleSummary" + HappyDataBaseSummaryScheme);
+
         db.execSQL("create table " + "HappyDataBaseChera" + "(" +
                 " _id integer primary key autoincrement, " +
                 "sp INTEGER"+ ", " +
@@ -179,124 +190,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if(newVersion==11 & oldVersion<=10) {
             db.execSQL("create table " + "HappyDataBaseTimeSeriesAllPeopleSummary" + HappyDataBaseSummaryScheme);
         }
+        if (newVersion == 13 & oldVersion <= 12) {
+            String upgradeQuery = "ALTER TABLE HappyDataBase ADD COLUMN ostan INTEGER";
+            db.execSQL(upgradeQuery);
+            upgradeQuery = "ALTER TABLE HappyDataBaseSummary ADD COLUMN ostan INTEGER";
+            db.execSQL(upgradeQuery);
+            upgradeQuery = "ALTER TABLE HappyDataBaseTemp ADD COLUMN ostan INTEGER";
+            db.execSQL(upgradeQuery);
+            upgradeQuery = "ALTER TABLE HappyDataBaseTimeSeriesAllPeopleTemp ADD COLUMN ostan INTEGER";
+            db.execSQL(upgradeQuery);
+            upgradeQuery = "ALTER TABLE HappyDataBaseTimeSeriesAllPeople ADD COLUMN ostan INTEGER";
+            db.execSQL(upgradeQuery);
+        }
+        if (newVersion == 14 & oldVersion <= 13) {
+            db.execSQL("update HappyDataBase set ostan=-1");
+            db.execSQL("update HappyDataBaseSummary set ostan=-1");
+            db.execSQL("update HappyDataBaseTemp set ostan=-1");
+            db.execSQL("update HappyDataBaseTimeSeriesAllPeopleTemp set ostan=-1");
+            db.execSQL("update HappyDataBaseTimeSeriesAllPeople set ostan=-1");
+        }
+        if (newVersion == 15 & oldVersion <= 14) {
+            String upgradeQuery = "ALTER TABLE HappyDataBaseTimeSeriesAllPeopleSummary ADD COLUMN ostan INTEGER";
+            db.execSQL(upgradeQuery);
+            db.execSQL("update HappyDataBaseTimeSeriesAllPeopleSummary set ostan=-1");
+
+        }
+
+        if (newVersion == 16 & oldVersion <= 15) {
+
+            db.execSQL("create table " + "HappyDataBaseTimeSeriesOstanAllPeopleSummary" + HappyDataBaseSummaryScheme);
+            db.execSQL("create table " + "HappyDataBaseTimeSeriesOstanAllPeopleTemp" + HappyDataBaseScheme);
+            db.execSQL("create table " + "HappyDataBaseTimeSeriesOstanAllPeople" + HappyDataBaseScheme);
+
+
+
+            db.execSQL("create table " + "HappyDataBaseTimeSeriesMyOstanAllPeople" + HappyDataBaseScheme);
+            db.execSQL("create table " + "HappyDataBaseTimeSeriesMyOstanAllPeopleSummary" + HappyDataBaseSummaryScheme);
+
+        }
+
     }
 
 
 }
 
-/*
-
-	public class DownloadFromKenvey2 extends AsyncTask<Void, Void, Boolean> {
-		// Flag for login flow
-		private boolean flag ;
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			//EventEntityTimeSeries events = new EventEntityTimeSeries();
-			final AsyncAppData<EventEntityTimeSeries> myevents = mKinveyClient.appData("TSWorldTemp", EventEntityTimeSeries.class);
-			//The EventEntity class is defined above
-			//AsyncAppData<EventEntity> myevents = mKinveyClient.appData("events", EventEntity.class);
-			myevents.get(new KinveyListCallback<EventEntityTimeSeries>() {
-				@Override
-				public void onSuccess(EventEntityTimeSeries[] result) {
-					Log.v("TAG", "received "+ result.length + " events");
-					mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeopleTemp", null, null);
-					ContentValues cv=new ContentValues() ;
-					for (EventEntityTimeSeries x1 : result){
-						cv.put("rating",(Double) x1.get("rating"));
-						cv.put("minute",(Integer) x1.get("minute"));
-						cv.put("minutecut",(Integer) x1.get("minutecut"));
-						cv.put("hour",(Integer) x1.get("hour"));
-						cv.put("hourcut",(Integer) x1.get("hourcut"));
-						cv.put("day",(Integer) x1.get("day"));
-						cv.put("month",(Integer) x1.get("month"));
-						cv.put("year",(Integer) x1.get("year"));
-						cv.put("type",(Integer) x1.get("type"));
-						cv.put("IndexInPeriod",(Integer) x1.get("IndexInPeriod"));
-						cv.put("latitude",(Double) x1.get("latitude"));
-						cv.put("longitude",(Double) x1.get("longitude"));
-						cv.put("LastData",(Integer) x1.get("LastData"));
-						String eventId =(String) x1.get("_id");
-						Log.i("cv",cv.toString());
-						mAdvDatabase.insert("HappyDataBaseTimeSeriesAllPeopleTemp", null, cv);
-					}
-					flag=true;
-//					DownloadFromKenvey3 task = new DownloadFromKenvey3();
-//					task.execute();
-
-				}
-				@Override
-				public void onFailure(Throwable error)
-				{
-					Log.e("TAG", "failed to fetch all", error);
-					flag=false;
-				}
-		});
-			//return flag;
-			return true;
-		}
-		@Override
-		protected void onPostExecute(final Boolean success) {
-
-			if ( flag==true) {
-			//	DownloadFromKenvey3 task = new DownloadFromKenvey3();
-			//	task.execute();
-			} else {
-			}
-		}
-		@Override
-		protected void onCancelled() {
-		}
-	}
-
-
-	public class DownloadFromKenvey3 extends AsyncTask<Void, Void, Boolean> {
-		// Flag for login flow
-		private boolean flag ;
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			final AsyncAppData<EventEntityTimeSeries> myevents = mKinveyClient.appData("TSWorldTemp", EventEntityTimeSeries.class);
-			Query query3 = mKinveyClient.query();
-			myevents.delete(query3, new KinveyDeleteCallback() {
-				@Override
-				public void onSuccess(KinveyDeleteResponse response) {
-					Log.v("TAG", "deleted successfully");
-					flag=true;
-					mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
-					updatedb("HappyDataBaseTimeSeriesAllPeopleTemp","HappyDataBaseTimeSeriesAllPeople");
-		//			UploadToKenvey();
-
-
-				}
-				public void onFailure(Throwable error) {
-					Log.e("TAG", "failed to delete ", error);
-					flag=false;
-				}
-			});
-
-
-
-			return flag;
-		}
-		@Override
-		protected void onPostExecute(final Boolean success) {
-
-			if (success &flag) {
-
-				mAdvDatabase.delete("HappyDataBaseTimeSeriesAllPeople", null, null);
-				updatedb("HappyDataBaseTimeSeriesAllPeopleTemp","HappyDataBaseTimeSeriesAllPeople");
-				UploadToKenvey();
-			} else {
-			}
-		}
-		@Override
-		protected void onCancelled() {
-		}
-	}
-
-
-
-
-		}
-
- */
 

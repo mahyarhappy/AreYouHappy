@@ -15,6 +15,8 @@ public class EventEntity extends GenericJson {
 	@Key
 	private Integer IndexInPeriod;
 	@Key
+	private Integer ostan;
+	@Key
 	private Double longitude;
 	@Key
 	private Double latitude;

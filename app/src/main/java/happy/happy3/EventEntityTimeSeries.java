@@ -41,6 +41,8 @@ public class EventEntityTimeSeries extends GenericJson {
 	@Key
 
 	private Integer WhyPosition;
+	@Key
+	private Integer ostan;
 	@Key("_acl")
 	private KinveyMetaData.AccessControlList acl;
 

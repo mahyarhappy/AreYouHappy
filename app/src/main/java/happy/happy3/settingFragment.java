@@ -29,6 +29,7 @@ public class settingFragment extends Fragment {
 	private EditText textViewDownloadMinute;
 	private EditText textViewUploadMinute;
 	private Switch ImMasterSwitch;
+	private Button chooseostan;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,17 @@ public class settingFragment extends Fragment {
 		whereami = (Button) v.findViewById(R.id.whereami);
 		updatemyplace = (Button) v.findViewById(R.id.updatemyplace);
 		 ImMasterSwitch = (Switch) v.findViewById(R.id.ImMaster);
+chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
+
+		chooseostan.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				getActivity().getSupportFragmentManager().beginTransaction()
+						.replace(R.id.fragment_container, new chooseostanfragment())
+						.addToBackStack(null)
+						.commit();
+			}
+		});
 
 		 textViewDownloadMinute=(EditText) v.findViewById(R.id.textViewDownloadMinute);
 		textViewUploadMinute=(EditText) v.findViewById(R.id.textViewUploadMinute);
