@@ -85,6 +85,9 @@ Integer zamanhaMs;
     private AppCompatRadioButton min1;
     private AppCompatRadioButton hour1;
     private AppCompatRadioButton day1;
+    private View w3;
+    private int nochartjusttext;
+    private float  nocharttext;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +128,7 @@ Integer zamanhaMs;
 
         w = inflater.inflate(R.layout.linearchart1, container, false);
         w2 = inflater.inflate(R.layout.piechart1, container, false);
+        w3 = inflater.inflate(R.layout.charttextview, container, false);
         chart = (LineChart) w.findViewById(R.id.linechart);
         piechart = (PieChart) w2.findViewById(R.id.piechart);
         radioTarikhcheOrAmar=(RadioGroup) v.findViewById(R.id.radio_TarikhcheOrAmar);
@@ -138,7 +142,7 @@ Integer zamanhaMs;
        // xx.updatedb2();
      //   radioTarikhcheOrAmar.check(R.id.radio_amar);
         if(x1==-1){
-            QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+            QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_min);
             x1=QueryPreferences.getStoredInt(getActivity(),"DefaultTime");
         }
         if(x2==-1){
@@ -168,8 +172,6 @@ Integer zamanhaMs;
         if(x4!=-1){
             radiofromwhen.check(x4);
         }
-
-
 
 
        drawchart(v, inflater,  container);
@@ -212,11 +214,10 @@ Integer zamanhaMs;
         return v;
     }
 
-    private void computezaman() {
-
-    }
 
     private void drawchart(View v,LayoutInflater inflater, ViewGroup container) {
+         nochartjusttext=0;
+         nocharttext=0f;
     onvanex2.setText("");
     long lasttimepassed = 0;
     whichSelected();
@@ -264,14 +265,22 @@ Integer zamanhaMs;
         min1.setText(getActivity().getResources().getString(R.string.amardaghighe));
         hour1.setText(getActivity().getResources().getString(R.string.amarsaat));
         day1.setText(getActivity().getResources().getString(R.string.amarday));
-        min1.setVisibility(View.INVISIBLE);
+      //  min1.setVisibility(View.INVISIBLE);
         IsTaikhche=0;
         radiofromwhen.setVisibility(View.INVISIBLE);
         radiomh.setVisibility(View.VISIBLE);
         region1.setVisibility(View.VISIBLE);
-        onvanex2.setText(khoshhali+" "+chekasi[whoindex]+" "+
-                dartoole+" "+vahedezaman[WhichMode]+" "+
-                amarcommentgraph2+" "+vahedezaman[WhichMode+1]+System.getProperty("line.separator")+miangin);
+
+        if(yy==0){
+            yy=3;
+            nochartjusttext=1;
+            onvanex2.setText(khoshhali+" "+chekasi[whoindex]+" "+
+                    getActivity().getResources().getString(R.string.amardaghighe)+System.getProperty("line.separator")+miangin);
+        }else{
+            onvanex2.setText(khoshhali+" "+chekasi[whoindex]+" "+
+                    dartoole+" "+vahedezaman[WhichMode]+" "+
+                    amarcommentgraph2+" "+vahedezaman[WhichMode+1]+System.getProperty("line.separator")+miangin);
+        }
         if(radiowho.getCheckedRadioButtonId()==R.id.man){
             cursor1 = new MainFragment().mAdvDatabase.rawQuery("SELECT * FROM HappyDataBaseSummary where type = " + yy, null);
         }else if(radiowho.getCheckedRadioButtonId()==R.id.kol ){
@@ -288,18 +297,19 @@ Integer zamanhaMs;
         IsTaikhche=-1;
     }
     boolean DrawLine=false;
-    if(IsTaikhche!=-10) {
+
+    if(IsTaikhche!=-10 && cursor1!=null) {
         if (IsTaikhche == 0 || IsTaikhche == 1) {
             DrawLine = true;
             cursor = new CursorWrapper(cursor1);
+            /*
             if (IsTaikhche == 1) {
-
                 cursor.moveToLast();
                 if (!cursor.isAfterLast()) {
                     lasttimepassed = cursor.getLong(cursor.getColumnIndex("xlabel"));
                 }
-                
             }
+*/
             cursor = new CursorWrapper(cursor1);
             cursor.moveToFirst();
             Calendar cc = GregorianCalendar.getInstance();
@@ -341,6 +351,8 @@ Integer zamanhaMs;
                     } else if (IsTaikhche == 0) {
                         int IndexInPeriod = cursor.getInt(cursor.getColumnIndex("IndexInPeriod"));
                         entries.add(new Entry(IndexInPeriod, (float) rating));
+                       // nocharttext=cursor.getInt(cursor.getColumnIndex("IndexInPeriod"));
+                        nocharttext=(float)(Math.floor(rating*10)/10);
 
 
                     }
@@ -376,7 +388,7 @@ Integer zamanhaMs;
                             labels.add(stringarray[i]);
                         }
 int percenttemp=sp1.getPercent(i);
-                        if(percenttemp>15) {
+                        if(percenttemp>=15) {
                             entries2.add(new PieEntry(percenttemp, stringarray[i]));
                         }
                     }
@@ -390,10 +402,14 @@ int percenttemp=sp1.getPercent(i);
         if (scatterOrLine == false) {
 
             // dataset.setFillColor(ContextCompat.getColor(getActivity(), R.color.colorAccent));
+            if (nochartjusttext == 0) {
 
             if (DrawLine) {
                 if (w2.getParent() != null) {
                     chartcontainer.removeView(w2);
+                }
+                if (w3.getParent() != null) {
+                    chartcontainer.removeView(w3);
                 }
                 // isadded=chartcontainer.findViewById(R.id.linearchart1);
                 if (w.getParent() == null) {
@@ -406,26 +422,29 @@ int percenttemp=sp1.getPercent(i);
 
                 if (i1 > 0) {
                     LineDataSet dataset = new LineDataSet(entries, "o");
+                    dataset.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+                   // new LineDataSet.Mode(LineDataSet.Mode.CUBIC_BEZIER);
                     dataset.setDrawValues(false);
-
+                   // dataset.isDrawCubicEnabled()
+                 //  dataset.setCubicIntensity();
                     dataset.setLineWidth(6);
-                   dataset.setDrawCircleHole(true);
+                    dataset.setDrawCircleHole(true);
 
-                //    dataset.setColor(Color.RED);
-                //    dataset.setCircleColor(Color.RED);
+                    //    dataset.setColor(Color.RED);
+                    //    dataset.setCircleColor(Color.RED);
                     ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
                     dataSets.add(dataset); // add the datasets
                     dataset.setDrawFilled(true);
                     int soorat1 = ContextCompat.getColor(getActivity(), R.color.colorAccent);
                     dataset.setColor(soorat1);
-                  //  dataset.setFillFormatter();
+                    //  dataset.setFillFormatter();
                     dataset.setFillColor(soorat1);
                     dataset.setCircleRadius(6);
                     dataset.setCircleColor(Color.BLACK);
-                 //   dataset.setCircleColorHole(soorat1);
-                //   dataset.setColor(Color.GREEN);
+                    //   dataset.setCircleColorHole(soorat1);
+                    //   dataset.setColor(Color.GREEN);
                     dataset.setCircleHoleRadius(4);
-                   // dataset.setColors(new int[]{Color.BLACK});
+                    // dataset.setColors(new int[]{Color.BLACK});
                     //chart = (LineChart) v.findViewById(R.id.chart);
                     LineData data = new LineData(dataset);
                     chart.setData(data);
@@ -440,7 +459,7 @@ int percenttemp=sp1.getPercent(i);
                     chart.getXAxis().setValueFormatter(new AxisValueFormatter() {
                         @Override
                         public String getFormattedValue(float value, AxisBase axis) {
-                            if (finalIsTaikhche == 0   && WhichMode==1) {
+                            if (finalIsTaikhche == 0 && WhichMode == 1) {
                                 switch ((int) value) {
 
                                     case 12:
@@ -453,48 +472,46 @@ int percenttemp=sp1.getPercent(i);
                                         return sobh;
                                     default:
                                         return String.valueOf(value);
-                                      //  return "";
+                                    //  return "";
                                 }
-                            }else  if (finalIsTaikhche == 1  && WhichMode==2) {
-                                switch ((int) (value*2)) {
+                            } else if (finalIsTaikhche == 1 && WhichMode == 2) {
+                                switch ((int) (value * 2)) {
 
                                     case -2:
-                                        String dirooz=getResources().getString(R.string.dirooz);
+                                        String dirooz = getResources().getString(R.string.dirooz);
                                         return dirooz;
                                     case 0:
-                                        String emrooz=getResources().getString(R.string.emrooz);
+                                        String emrooz = getResources().getString(R.string.emrooz);
                                         return emrooz;
                                     case -4:
-                                        String parirooz=getResources().getString(R.string.parirooz);
+                                        String parirooz = getResources().getString(R.string.parirooz);
                                         return parirooz;
                                     default:
                                         //return String.valueOf(value);
-                                        if(value<-2){
+                                        if (value < -2) {
                                             return String.valueOf((int) value);
-                                        }else{
+                                        } else {
                                             return "";
                                         }
 
                                 }
-                            }
-                            else  if (finalIsTaikhche == 1  && WhichMode==2) {
-                                switch ((int) (value*2)) {
+                            } else if (finalIsTaikhche == 1 && WhichMode == 2) {
+                                switch ((int) (value * 2)) {
                                     case 0:
                                         return "emrooz";
                                     case -4:
-                                        String parirooz=getResources().getString(R.string.parirooz);
+                                        String parirooz = getResources().getString(R.string.parirooz);
                                         return parirooz;
                                     default:
                                         //return String.valueOf(value);
-                                        if(value<-2){
+                                        if (value < -2) {
                                             return String.valueOf((int) value);
-                                        }else{
+                                        } else {
                                             return "";
                                         }
 
                                 }
-                            }
-                            else{
+                            } else {
                                 return String.valueOf((int) value);
                             }
 
@@ -515,6 +532,9 @@ int percenttemp=sp1.getPercent(i);
 
                 if (w.getParent() != null) {
                     chartcontainer.removeView(w);
+                }
+                if (w3.getParent() != null) {
+                    chartcontainer.removeView(w3);
                 }
                 if (w2.getParent() == null) {
                     chartcontainer.addView(w2);
@@ -541,11 +561,25 @@ int percenttemp=sp1.getPercent(i);
                     piechart.setData(data);
                     piechart.setHoleRadius(0f);
                     piechart.setDrawHoleEnabled(false);
-                    onvanex2.setText(avamel+" "+chekasi[whoindex]);
+                    onvanex2.setText(avamel + " " + chekasi[whoindex]);
                 }
                 //piechart.setx
             }
+        }else{
+                if (w2.getParent() != null) {
+                    chartcontainer.removeView(w2);
+                }
+                if (w.getParent() != null) {
+                    chartcontainer.removeView(w);
+                }
+                // isadded=chartcontainer.findViewById(R.id.linearchart1);
+                if (w3.getParent() == null) {
+                    chartcontainer.addView(w3);
+                }
+                TextView txt1 = (TextView) w3.findViewById(R.id.txt1);
 
+                txt1.setText(Float.toString(nocharttext));
+            }
 
             if (1 == 0) {
                 chart.animateX(Math.min(i1 * 100, 1000));

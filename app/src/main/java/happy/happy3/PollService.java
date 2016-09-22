@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -22,25 +23,53 @@ import java.util.Calendar;
 public class PollService extends IntentService {
 	static int i11=0;
 	private static final String TAG = "PollService";
-	Context context1;
+	static Context context1;
 	private static final int POLL_INTERVAL = 1000 * 60; // 60 seconds
+	private static MainFragment x1;
+	private boolean notify1;
+
+	//Context context1;
 	public static Intent newIntent(Context context) {
-		Context context1= context;
+		context1= context;
 		return new Intent(context, PollService.class);
 	}
+
 	public PollService() {
 		super(TAG);
 	}
 	@Override
 	protected void onHandleIntent(Intent intent) {
+context1=getApplicationContext();
+		x1=new MainFragment();
+		x1.context1=context1;
+
+		x1.ForceUpload=true;
+		x1.onCreateWorks();
+		x1.updatedb2();
 		Calendar calendar = Calendar.getInstance();
 		String str= "Are You Happy Right Now? " +calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE);
 		Log.i(TAG,str);
 		i11+=1;
-		notified(str);
+		notify1= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("notify", true);
+		if (notify1) {
+			notified(str);
+		}
+		PreferenceManager.getDefaultSharedPreferences(context1)
+				.edit()
+				.putBoolean("notify", !notify1)
+				.apply();
+		salam(context1);
 	}
-
+	public static void salam(Context context) {
+		Log.e("salamService","salamService");
+		context1= context;
+		x1=new MainFragment();
+		x1.context1=context1;
+		x1.updatedb2();
+	}
 	public static void setServiceAlarm(Context context, boolean isOn) {
+		context1=context;
+		Log.e("setServiceAlarm","setServiceAlarm");
 		Intent i = PollService.newIntent(context);
 		PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 		AlarmManager alarmManager = (AlarmManager)
@@ -63,23 +92,15 @@ public class PollService extends IntentService {
 				calendar.add(Calendar.DAY_OF_MONTH, 1);
 
 			}
-		//	calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-// With setInexactRepeating(), you have to use one of the AlarmManager interval
-// constants--in this case, AlarmManager.INTERVAL_DAY.
 			if(1==1){
 				//this is actual alarm
 				alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
-						1000 * 60 * 60*6, pi);
+						1000 * 60 * 60, pi);
 			}else{
 				//this is testing alarm
 				alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
 						SystemClock.elapsedRealtime(), POLL_INTERVAL, pi);
 			}
-
-
-
-
 		} else {
 			alarmManager.cancel(pi);
 			pi.cancel();
@@ -88,14 +109,6 @@ public class PollService extends IntentService {
 	public void notified(String str){
 		Resources resources = getResources();
 		Intent i = new Intent(this, MainActivity.class);
-		//  Intent i = PhotoGalleryActivity.newIntent(this);
-	//	TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		//stackBuilder.addParentStack(MainActivity.class);
-		// Adds the Intent to the top of the stack
-		//stackBuilder.addNextIntent(resultIntent);
-
-	//	PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,
-	//			PendingIntent.FLAG_UPDATE_CURRENT);
 		PendingIntent pi = PendingIntent.getActivity(this, 0, i, 0);
 		Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		Notification notification = new NotificationCompat.Builder(this)

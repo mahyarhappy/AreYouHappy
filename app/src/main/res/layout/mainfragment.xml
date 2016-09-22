@@ -27,9 +27,9 @@
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@string/cheghadrkhoshhaliHint"
-            android:id="@+id/textView"
+            android:id="@+id/tozih"
             android:layout_gravity="center_horizontal"
-            android:textSize="17sp"
+            android:textSize="20sp"
             android:textColor="#000000" />
 
         <android.widget.RatingBar
@@ -104,19 +104,29 @@
                 android:gravity="center_vertical|center_horizontal"
                 >
 
-        <Button
+
+                <Button
+                    style="@style/Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/x"
+                    android:id="@+id/justtest"
+                    android:background="@color/Toosi"
+                    android:textColor="@android:color/black"
+                    />
+
+                <Button
             style="@style/Widget.AppCompat.Button.Colored"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/tanzimat"
             android:id="@+id/tanzimat"
             android:background="@color/colorAccent"
-            />
+                    />
 
-    </LinearLayout>
+            </LinearLayout>
 
         </LinearLayout>
-
 
 
 </LinearLayout>

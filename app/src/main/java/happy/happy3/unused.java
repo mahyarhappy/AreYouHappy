@@ -1215,6 +1215,73 @@ public void DownloadFromKenvey() {
 
 		}
 
+  /*
+            PersAmarDay = (Button) v.findViewById(R.id.PersAmarDay);
+            PersAmarDay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+            IranAmarDay = (Button) v.findViewById(R.id.IranAmarDay);
+            IranAmarDay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+            WhyMe = (Button) v.findViewById(R.id.Why1);
+            WhyMe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+            WhyAll = (Button) v.findViewById(R.id.Why2);
+            WhyAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+
+            TSThisWeekAll = (Button) v.findViewById(R.id.TSWThisWeek);
+            TSThisWeekAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
+                }
+            });
+
+            TSThisWeekMe  = (Button) v.findViewById(R.id.TSPersThisWeek);
+            TSThisWeekMe.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    updateAndShowHappinessFragment();
+                }
+            });
 
 
 */

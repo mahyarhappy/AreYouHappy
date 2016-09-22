@@ -4,7 +4,7 @@
     </string>
     <string name="washappy">
         <b>
-            چقدر خوشحال بودی؟
+            چقدر خوشحال بوده ام؟
         </b>
 
     </string>
@@ -50,7 +50,7 @@
         در یک روز
     </string>
     <string name="amardaghighe">
-در یک ساعت
+به طور کلی
     </string>
     <string name="amarday">
 در یک ماه
@@ -68,11 +68,16 @@
 میانگین خوشحالی
     </string>
     <string name="tarikhche">
-        روند خوشحالی اخیر
+روند خوشحالی
     </string>
      <string name="cheghadrkhoshhaliHint">
-چقدر خوشحالی؟
-صفر ستاره یعنی بسیار ناراحت و پنج یعنی بسیار خوشحال
+چقدر خوشحال هستم؟
+صفر ستاره یعنی بسیار ناراحت و پنج یعنی
+         بسیار
+         خوشحال
+         . بعدازانتخاب
+ستاره ها،
+         روی دکمه ثبت کلیک کنید
     </string>
     <string name="activitytitle1">
 سیبی
@@ -98,7 +103,7 @@
     <string name="whereami">
         مکانم را روی نقشه نشان بده
     </string>
-    <string name="updatemyplace">
+<string name="updatemyplace">
         مکانم را به روز کن
     </string>
      <string name="sp1">
@@ -131,6 +136,18 @@
     <string name="sp9">
 عشقی
     </string>
+
+
+
+
+
+
+
+
+
+
+
+
     <string name="dalil">
 دلیل ناراحتی یا خوشحالی را انتخاب کن
     </string>
@@ -167,7 +184,7 @@
         </item>
     </string-array>
 <string name="chera">
-    دلیل خوشحالی
+    دلیل روحیه
 </string>
       <string name="notchosen">
 انتخاب نشده
@@ -182,8 +199,9 @@
     <string name="azyekmahepish">از یک ماه پیش</string>
     <string name="hamezamanha">همه زمان ها</string>
     <string name="azyekhaftepish">از یک هفته پیش</string>
+
     <string name="PersAmarDay">
-        چقدر در طول ساعت های یک روز خوشحالی
+        چقدر در طول ساعت های یک روز خوشحال بوده ام
     </string>
 
 <string name="IranAmarDay">
@@ -197,14 +215,30 @@
                 "Why2">
         عوامل تاثیرگذار در روحیه ایرانی ها
     </string>
-    <string name="TSPersThisWeek">این هفته چقدر خوشحال بودی</string>
+    <string name="TSPersThisWeek">این هفته چقدر خوشحال بوده ام</string>
     <string name="TSWThisWeek">ایران این هفته چقدر خوشحال بود</string>
+
     <string name="mizankhoshhali">
         میزان خوشحالی
     </string>
 
 
+    <string name="TSOstanThisWeek">
+        استان من این هفته چقدر خوشحال بود
+    </string>
+
+
     <string-array name="conv_array">
+
+         <item>
+            میزان خوشحالی ام به طور کلی
+        </item>
+        <item>
+میزان خوشحالی ایرانی ها به طور کلی
+        </item>
+        <item>
+میزان خوشحالی استان من به طور کلی
+        </item>
         <item>
             @string/PersAmarDay
         </item>
@@ -223,6 +257,10 @@
          <item>
             @string/TSWThisWeek
         </item>
+ <item>
+            @string/TSOstanThisWeek
+        </item>
+
     </string-array>
 <string name="parirooz">
     پریروز
@@ -261,6 +299,21 @@
     <string name="avamel">عوامل تاثیرگذار در روحیه</string>
     <string name="chooseostan">استان خود را انتخاب کنید</string>
     <string name="selectyourostan">استان خود را انتخاب کنید</string>
+    <string name="WorkOffline">
+        قطع کردن اینترنت
+    </string>
+    <string name="time_between_uploads_minute">
+        حداقل زمان بین آپلودها ( دقیقه):
+    </string>
+    <string name="time_between_downloads_minute">
+        حداقل زمان بین دانلودها (دقیقه):
+    </string>
+    <string name="ForceUpload">
+        آپلود بعد از  ثبت
+    </string>
+    <string name="x">
+        آپدیت داده
+    </string>
     <string-array name="ostanha">
     <item>
         تهران
@@ -268,8 +321,118 @@
         <item>
             اصفهان
         </item>
+
         <item>
             آذربایجان شرقی
         </item>
+
+        <item>
+آذربایجان غربی
+        </item>
+
+        <item>
+اردبیل
+        </item>
+
+        <item>
+البرز
+        </item>
+
+        <item>
+ایلام
+        </item>
+
+        <item>
+بوشهر
+        </item>
+
+        <item>
+چهارمحال و بختیاری
+        </item>
+
+        <item>
+خراسان جنوبی
+        </item>
+
+        <item>
+خراسان رضوی
+        </item>
+
+        <item>
+خراسان شمالی
+        </item>
+
+        <item>
+خوزستان
+        </item>
+        <item>
+زنجان
+        </item>
+        <item>
+سمنان
+        </item>
+        <item>
+سیستان و بلوچستان
+        </item>
+        <item>
+فارس
+        </item>
+        <item>
+قزوین
+        </item>
+    <item>
+قم
+        </item>
+         <item>
+کردستان
+        </item>
+
+            <item>
+کرمان
+        </item>
+
+              <item>
+کرمانشاه
+        </item>
+
+
+            <item>
+کهکیلویه و بویراحمد
+        </item>
+
+          <item>
+گلستان
+        </item>
+
+            <item>
+گیلان
+        </item>
+        <item>
+لرستان
+        </item>
+
+
+            <item>
+مازندران
+        </item>
+
+        <item>
+مرکزی
+        </item>
+            <item>
+هرمزگان
+        </item>
+
+          <item>
+همدان
+        </item>
+
+            <item>
+یزد
+        </item>
+        <item>
+
+خارج از کشور
+            </item>
     </string-array>
 </resources>

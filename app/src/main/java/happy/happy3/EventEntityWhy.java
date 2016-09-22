@@ -16,6 +16,8 @@ public class EventEntityWhy extends GenericJson {
 	private Integer whypercent;
 	@Key
 	private Integer ostan;
+	@Key
+	private String whystring;
 	@Key("_acl")
 	private KinveyMetaData.AccessControlList acl;
 

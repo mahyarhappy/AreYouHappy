@@ -4,14 +4,11 @@ package happy.happy3;
  * Created by LENOVO on 7/17/2016.
  */
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 import android.database.DatabaseUtils;
@@ -21,10 +18,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -37,16 +32,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.network.connectionclass.ConnectionClassManager;
 import com.facebook.network.connectionclass.ConnectionQuality;
-import com.facebook.network.connectionclass.DeviceBandwidthSampler;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.kinvey.android.AsyncAppData;
 import com.kinvey.android.Client;
 //import com.kinvey.java.model.KinveyMetaData;
@@ -72,13 +62,13 @@ import static android.widget.Toast.makeText;
 public class MainFragment extends Fragment implements LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
     public static final int DIALOG_FRAGMENT = 121;
-    public static Typeface font;// = Typeface.createFromAsset(getActivity().getAssets(), "BNAZANIN.ttf");
+    public static Typeface font;
     private String your_app_key = "kid_H1Fnk3aK";
     private String your_app_secret = "cd660e010c734b908d0c7720802aef5c";
     private String your_app_mastersecret = "0412a3c640df46a79352026684f1826c";
 
 public static int ostan;
-    public int minutecutConstant = 2;
+    public int minutecutConstant = 15;
     public int hourcutConstant = 3;
     static int DownloadMinute ;//1/60;
     static int UploadMinute ;
@@ -96,13 +86,12 @@ public static int ostan;
     private ProgressDialog dialog;
 
     public static final  int  MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=101;
-    public static final boolean IncludeAllGPS = true;
+
     private static final int POLL_INTERVAL = 1000 * 60;
     private RatingBar ratingBar;
     public static final String[] ClockNames = new String[]{"minutecut", "hourcut", "day", "month"};
 
-    public static GoogleApiClient mGoogleApiClient;
-    public static Location mCurrentLocation;
+
     public static Integer WhyPosition ;
     static Client mKinveyClient;
     public boolean LetUploadPersonal = false;
@@ -110,31 +99,23 @@ public static int ostan;
     int pendingactivities=0;
     ArrayList<String> runfunc = new ArrayList<String>();
     ArrayList<String> RunTaskDOne = new ArrayList<String>(); //Run Taskdone() at the end of this function
-    //static SQLiteDatabase mDatabase;
     static SQLiteDatabase mAdvDatabase;
-    String[] sparray;
-    Activity context1;
-    private Button IranAmarDay;
-    private Button WhyMe;
-    private Button WhyAll;
-    private Button TSThisWeekAll;
-    private Button TSThisWeekMe;
-    public static boolean TryConnectiontoGoogleApi=false;
+    //Activity context1;
+    Context context1;
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
     private boolean ismNetworkAvailable;
-private UpdateAsync UpdateAsyncInstance;
-    private ConnectionClassManager mConnectionClassManager;
-    private DeviceBandwidthSampler mDeviceBandwidthSampler;
+
     private static final String TAG = "ConnectionClass-Sample";
     private String mURL = "http://connectionclass.parseapp.com/m100_hubble_4060.jpg";
- // private String mURL="http://devcenter.kinvey.com/images/logo.png";
- //   private String mURL="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png";
-    private int mTries = 0;
     private ConnectionQuality mConnectionClass = ConnectionQuality.UNKNOWN;
     private static boolean justsabt;
     private boolean FirstStartOfProgram;
-
+public String[] engwhy={"dalilnarahatiyakhoshhali","khanevade","doostan","salamati",
+        "varzeshi","tvgheirevarzesh","shoghlodaramad","khastegi","hichkodam","eshghi"};
+    public boolean ForceUpload;
+    private Button UpdateDataButton;
+    private TextView tozih;
 
     //static SQLiteDatabase mAdvDatabase;
     // static SQLiteDatabase mtempDatabase;
@@ -142,36 +123,6 @@ private UpdateAsync UpdateAsyncInstance;
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        ImMaster= PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("ImMaster", false);
-        WorkOffline= PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("WorkOffline", false);
-        ostan=PreferenceManager.getDefaultSharedPreferences(context1)
-                .getInt("ostan", -1);
-        font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/BNAZANIN.ttf");
-       //
-//		mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Temp databse
-        if(TryConnectiontoGoogleApi==false){
-            TryConnectiontoGoogleApi=true;
-            mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                    .addApi(LocationServices.API)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .build();
-     //       mGoogleApiClient.connect();
-
-        }
-        UploadMinute=PreferenceManager.getDefaultSharedPreferences(context1)
-                .getInt("UploadMinute", 60);
-        DownloadMinute=PreferenceManager.getDefaultSharedPreferences(context1)
-                .getInt("DownloadMinute", 360);
-
-        mAdvDatabase = new DatabaseHelper(getActivity().getApplicationContext()).getWritableDatabase();//Original Database
-      //
-        if(ImMaster){
-            mKinveyClient = new Client.Builder(your_app_key,  your_app_mastersecret, getActivity()).build();
-        }else{
-            mKinveyClient = new Client.Builder(your_app_key, your_app_secret, getActivity()).build();
-        }
-        mKinveyClient.setRequestTimeout(2000);
 
         //	sparray=new String[100+1];
         //	for(int i=0;i<=100;i+=1){
@@ -181,18 +132,79 @@ private UpdateAsync UpdateAsyncInstance;
 
 
     }
+    public void onCreateWorks(){
+        ImMaster= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("ImMaster", false);
+        PreferenceManager.getDefaultSharedPreferences(context1)
+                .edit()
+                .putBoolean("WorkOffline", false)
+                .apply();
+
+
+
+        WorkOffline= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("WorkOffline", false);
+        ForceUpload= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("ForceUpload", false);
+        ostan=PreferenceManager.getDefaultSharedPreferences(context1)
+                .getInt("ostan", -1);
+        font = Typeface.createFromAsset(context1.getAssets(), "fonts/BNAZANIN.ttf");
+        //
+//		mAdvDatabase = new DatabaseHelper(context1.getApplicationContext()).getWritableDatabase();//Temp databse
+
+        UploadMinute=PreferenceManager.getDefaultSharedPreferences(context1)
+                .getInt("UploadMinute2", 60*7);
+        DownloadMinute=PreferenceManager.getDefaultSharedPreferences(context1)
+                .getInt("DownloadMinute2", 60*12);
+
+        mAdvDatabase = new DatabaseHelper(context1.getApplicationContext()).getWritableDatabase();//Original Database
+        //
+        //if(ImMaster){
+        if(1==0){
+            mKinveyClient = new Client.Builder(your_app_key,  your_app_mastersecret, context1).build();
+        }else{
+            mKinveyClient = new Client.Builder(your_app_key, your_app_secret, context1).build();
+        }
+        mKinveyClient.setRequestTimeout(2000);
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         
         View v = inflater.inflate(R.layout.mainfragment, container, false);
+        context1=getContext();
+        onCreateWorks();
         mCrimeRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
-        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(context1));
         String[] tempstring1 = getResources().getStringArray(R.array.conv_array);
         List<String> tempstring2 = new ArrayList<String>(Arrays.asList(tempstring1));
         mAdapter = new CrimeAdapter(tempstring2);
         mCrimeRecyclerView.setAdapter(mAdapter);
+/*
+        SwitchCompat WorkOfflineSwitch = (SwitchCompat) v.findViewById(R.id.WorkOffline2);
 
 
+        WorkOfflineSwitch.setChecked(WorkOffline);
+        WorkOfflineSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+               WorkOffline=isChecked;
+                PreferenceManager.getDefaultSharedPreferences(context1)
+                        .edit()
+                        .putBoolean("WorkOffline", isChecked)
+                        .apply();
+            }
+        });
+*/
+
+         UpdateDataButton = (Button) v.findViewById(R.id.justtest);
+
+    UpdateDataButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ForceUpload=true;
+            new UpdateAsync().execute();
+//           PollService.setServiceAlarm(context1,true);
+        }
+
+    });
 
 
         wereyouhappy = (Button) v.findViewById(R.id.washappy);
@@ -213,24 +225,6 @@ private UpdateAsync UpdateAsyncInstance;
                 cheradialogclass editNameDialogFragment = new cheradialogclass();
                 editNameDialogFragment.setTargetFragment(fm2.findFragmentById(R.id.fragment_container),DIALOG_FRAGMENT);
                 editNameDialogFragment.show(fm2, "cheradialog");
-/*
-                FragmentTransaction ft = getActivity().getFragmentManager().beginTransaction();
-
-                DialogFragment dialogFrag = new cheradialogclass();
-                //dialogFrag.setTargetFragment(getParentFragment(), DIALOG_FRAGMENT);
-                dialogFrag.setTargetFragment(MainFragment(), DIALOG_FRAGMENT);
-                dialogFrag.show(getFragmentManager().beginTransaction(), "dialog");
-
-
-/*
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new cheradialogclass())
-                        .addToBackStack(null)
-                        .commit();
-              //  editNameDialogFragment.onDismiss();
-             //   spinner.setSelection(0);
-*/
-
             }
         });
         tanzimat = (Button) v.findViewById(R.id.tanzimat);
@@ -250,6 +244,9 @@ private UpdateAsync UpdateAsyncInstance;
 
         wereyouhappy.setTypeface(font);
         sabt.setTypeface(font);
+
+         tozih=(TextView) v.findViewById(R.id.tozih);
+        tozih.setTypeface(font);
 
         LayerDrawable stars = (LayerDrawable) ratingBar
                 .getProgressDrawable();
@@ -280,28 +277,41 @@ if(FirstStartOfProgram){
         return v;
     }
     public void updateAndShowHappinessFragment() {
-        /*
-        makeText(getActivity(),
-                R.string.darhalesabt,
-                Toast.LENGTH_SHORT).show();
-                */
+        ForceUpload= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("ForceUpload", false);
         RunTaskDOne.clear();
         runfunc.add("ShowHappinessFragment");
         justsabt=false;
         //runfunc.add("GetWorldDataForPlotting");
         //
         //UpdateAsyncInstance= (UpdateAsync) new UpdateAsync().execute();
-         new UpdateAsync().execute();
+        UpdateAsyncConditional();
+
      //   UpdateAsyncInstance.execute();
         //runfunc.add("updatedb2");
 
         //TaskDone();
         //TaskDone();
     }
-    public void ShowHappinessFragment() {
-        if (dialog.isShowing()) {
-            dialog.dismiss();
+
+    private void UpdateAsyncConditional() {
+        Calendar cc = GregorianCalendar.getInstance();//cc.getTimeInMillis()
+        long x22 = cc.getTimeInMillis();
+        long LastTimeInternet = QueryPreferences.getStoredLong(context1, "LastTimeInternet");
+        // runfunc.add("LoginToKinvey");
+        if(ForceUpload || x22 - LastTimeInternet > 1000 * 60 * UploadMinute ) {
+            new UpdateAsync().execute();
+        }else{
+            TaskDone();
         }
+    }
+
+    public void ShowHappinessFragment() {
+        if (dialog != null) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+        }
+
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new ShowHappiness())
                 .addToBackStack(null)
@@ -310,18 +320,20 @@ if(FirstStartOfProgram){
     public void updatedb3() {
         runfunc.add("updatedb4");
         //isNetworkAvailable(true);
-        new NetworkUtil2().execute(mURL);
+        new NetworkUtil2().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        //new NetworkUtil2().execute(mURL);
     }
     public void updatedb4() {
 
         if(isConnected==true &&  ismNetworkAvailable) {
             Calendar cc = GregorianCalendar.getInstance();//cc.getTimeInMillis()
             long x22 = cc.getTimeInMillis();
-            long LastTimeInternet = QueryPreferences.getStoredLong(getActivity(), "LastTimeInternet");
+            long LastTimeInternet = QueryPreferences.getStoredLong(context1, "LastTimeInternet");
            // runfunc.add("LoginToKinvey");
 
-            if (x22 - LastTimeInternet > 1000 * 60 * DownloadMinute && justsabt==false) {
-                QueryPreferences.setStoredLong(getActivity(), "LastTimeInternet", x22);
+            if ((x22 - LastTimeInternet > 1000 * 60 * DownloadMinute && justsabt==false)||ForceUpload) {
+                QueryPreferences.setStoredLong(context1, "LastTimeInternet", x22);
                 if (ImMaster) {
                   //  RunTaskDOne.add()
                     runfunc.add("UploadWorldDataToWorldKinvey");
@@ -330,16 +342,20 @@ if(FirstStartOfProgram){
                 }
                 runfunc.add("GetWorldDataForPlotting");
             }
-            if (x22 - LastTimeInternet > 1000 * 60 * UploadMinute) {
+            if (x22 - LastTimeInternet > 1000 * 60 * UploadMinute || ForceUpload) {
                 runfunc.add("UploadPersonalDataToKinvey");
             }
         }
         TaskDone();
     }
     public void updatedb2() {
-        ProcessPersonalData();
+        updatedb2(false);
+    }
+    public void updatedb2(boolean OnlyUpload) {
+        if(!OnlyUpload) {
+            ProcessPersonalData();
+        }
         runfunc.add("updatedb3");
-
         isConnected=false;
         LoginToKinvey("Report");
 
@@ -350,7 +366,7 @@ String dialogstring;
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = new ProgressDialog(getActivity());
+            dialog = new ProgressDialog(context1);
 
 
            String darhalesabt1= getResources().getString(R.string.darhalesabt);
@@ -387,10 +403,11 @@ String dialogstring;
         @Override
         protected void onProgressUpdate(Void... v) {
             super.onProgressUpdate(v);
-            if (dialog.isShowing()) {
-                dialog.setMessage(dialogstring);
+            if(dialog!=null) {
+                if (dialog.isShowing()) {
+                    dialog.setMessage(dialogstring);
+                }
             }
-
         }
 
     }
@@ -528,13 +545,19 @@ String sasdasd=mKinveyClient.user().getId();
             @Override
             public void onSuccess(KinveyDeleteResponse response) {
                 Log.v("TAG", "deleted successfully");
-                sp sp1 = new sp(getActivity(), 1);
+                sp sp1 = new sp(context1, 1);
+               // Log.e("spcount",Integer.toString(engwhy.length));
                 for (int iy = 0; iy <= (sp1.getarray(1).length - 1); iy += 1) {
+                    Log.e("spcount",Integer.toString(iy));
                     EventEntityWhy event1 = new EventEntityWhy();
                     event1.set("whyindex", iy);
                     int temp12 = sp1.get(iy);
                     event1.set("whycount", sp1.get(iy));
                     event1.set("whypercent", sp1.getPercent(iy));
+                    if (engwhy.length - 1 >= iy) {
+                        event1.set("whystring", engwhy[iy]);
+                    }
+
                     if(temp12>0) {
                         if (LetUploadPersonal) {
                             UploadEvent(event1, "WhyPersonal");
@@ -607,34 +630,33 @@ String sasdasd=mKinveyClient.user().getId();
         myevents4.get(new KinveyListCallback<EventEntityWhy>() {
             @Override
             public void onSuccess(EventEntityWhy[] result) {
-                sp sp2 = new sp(getActivity(), 2);
+                sp sp2 = new sp(context1, 2);
                 sp2.makeallzero();
                 //sp sp1=new sp(getActivity(),1);
                 //;
                 for (EventEntityWhy x1 : result) {
                     //	sp2.set((Integer) x1.get("whyindex"))
-                    int temp1 = (Integer) x1.get("whyindex");
+                    int index = (Integer) x1.get("whyindex");
                     int temp2 = (Integer) x1.get("whycount");
                     String temp3=(String) x1.get("_acl.creator");
                     final Object ac132 = x1.get("_ac1");
-                    sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whycount"));
+                    String st1=(String) x1.get("whystring");
+                  //  int index = -1;
+                    for (int i=0;i<engwhy.length;i++) {
+                        if (engwhy[i].equals(st1)) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    int yuiyui=0;
+                    if ((Integer) x1.get("whycount") > 0) {
+                         yuiyui=0;
+                    }
+                    yuiyui=1;
+                  //  sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whycount"));
+                    sp2.increment(index, (Integer) x1.get("whycount"));
                 }
-                /*
-                Query query3 = mKinveyClient.query();
-                myevents4.delete(query3, new KinveyDeleteCallback() {
-                    @Override
-                    public void onSuccess(KinveyDeleteResponse response) {
-                        Log.v("TAG", "deleted successfully");
-                    }
-
-                    public void onFailure(Throwable error) {
-                        Log.e("TAG", "failed to delete ", error);
-                    }
-                });
-                */
                 TaskDone();
-                //UploadToKenvey();
-
             }
 
             @Override
@@ -810,17 +832,26 @@ String sasdasd=mKinveyClient.user().getId();
         myevents4.get(new KinveyListCallback<EventEntityWhy>() {
             @Override
             public void onSuccess(EventEntityWhy[] result) {
-                sp sp2 = new sp(getActivity(), 2);
+                sp sp2 = new sp(context1, 2);
                 sp2.makeallzero();
-                //sp sp1=new sp(getActivity(),1);
+                //sp sp1=new sp(context1,1);
                 //;
                 for (EventEntityWhy x1 : result) {
                     //	sp2.set((Integer) x1.get("whyindex"))
-                    int temp1 = (Integer) x1.get("whyindex");
+                    int index = (Integer) x1.get("whyindex");
                     int temp2 = (Integer) x1.get("whycount");
                    int temp3= (Integer) x1.get("whypercent");
+                    String st1=(String) x1.get("whystring");
+                    for (int i=0;i<engwhy.length;i++) {
+                        if (engwhy[i].equals(st1)) {
+                            index = i;
+                            break;
+                        }
+                    }
+
                    // sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whycount"));
-                    sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whypercent"));
+                  //  sp2.increment((Integer) x1.get("whyindex"), (Integer) x1.get("whypercent"));
+                    sp2.increment(index, (Integer) x1.get("whypercent"));
                 }
                 /*
                 Query query3 = mKinveyClient.query();
@@ -1079,7 +1110,7 @@ TaskDone();
         myevents43.delete(query3, new KinveyDeleteCallback() {
             @Override
             public void onSuccess(KinveyDeleteResponse response) {
-                sp sp2 = new sp(getActivity(), 2);
+                sp sp2 = new sp(context1, 2);
                 for (int iy = 0; iy <= (sp2.getarray(2).length - 1); iy += 1) {
                     EventEntityWhy event1 = new EventEntityWhy();
                     event1.set("whyindex", iy);
@@ -1087,6 +1118,10 @@ TaskDone();
                     event1.set("whycount", sp2.get(iy));
                     event1.set("whypercent", sp2.getPercent(iy));
                     int temp3=sp2.getPercent(iy);
+                    if (engwhy.length - 1 >= iy) {
+                        event1.set("whystring", engwhy[iy]);
+                    }
+
                     UploadEvent(event1, "WhyWorld");
                 }
             }
@@ -1108,8 +1143,9 @@ TaskDone();
         //boolean TurnToNext=true;
         ContentValues CurrentTimeValue = CurrentTime();
         for (int i1 = 0; i1 <= 2; i1 += 1) {
-            //	Log.e("whichi", Integer.toString(i1));
+            	Log.e("whichi", Integer.toString(i1));
             Cursor cursor1 = null;
+            Log.e("whichi", "SELECT * FROM " + InputTableName + " where type = " + Integer.toString(i1));
             cursor1 = mAdvDatabase.rawQuery("SELECT * FROM " + InputTableName + " where type = " + Integer.toString(i1), null);
             Cursor cursor = new CursorWrapper(cursor1);
             cursor.moveToFirst();
@@ -1247,6 +1283,7 @@ TaskDone();
         values2.put("minutecut", Math.floor(cc.get(GregorianCalendar.MINUTE) / minutecutConstant) * minutecutConstant);
         values2.put("hourcut", Math.floor(cc.get(GregorianCalendar.HOUR_OF_DAY) / hourcutConstant) * hourcutConstant);
         //Double long1= QueryPreferences.getStoredDouble(getContext(), "Longitude");
+        /*
         if (IncludeAllGPS == true) {
             Double long1 = QueryPreferences.getStoredDouble(context1, "Longitude");
             Double lat1 = QueryPreferences.getStoredDouble(context1, "Latitude");
@@ -1254,7 +1291,7 @@ TaskDone();
             values2.put("longitude", long1);
             //	Log.i("lat", Double.toString(lat1));
         }
-
+*/
 
         return values2;
     }
@@ -1264,24 +1301,36 @@ TaskDone();
         ContentValues CurrentTimeValue = CurrentTime();
         //mAdvDatabase.delete("HappyDataBaseSummary", null, null);
         mAdvDatabase.delete(OutputSummaryTableName, null, null);
-        for (int i1 = 0; i1 <= 2; i1 += 1) {
-            //	Log.e(" salam", Integer.toString(i1));
+        for (int i1 = 0; i1 <= 3; i1 += 1) {
+            	//Log.e(" salam", Integer.toString(i1));
             Cursor cursor1 = null;
             String q1;
             // cursor1 = mAdvDatabase.rawQuery("SELECT avg(rating) as rating, IndexInPeriod , type FROM HappyDataBase where istemp = 0 AND type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod", null);
-            if (IncludeAllGPS == true) {
-                q1="SELECT avg(rating) as rating, IndexInPeriod , type , ostan  , latitude , longitude FROM " + OutputTableName + " where type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod";
-            } else {
-                q1="SELECT avg(rating) as rating, IndexInPeriod , type , ostan  FROM " + OutputTableName + " where type = " + Integer.toString(i1) + " GROUP BY IndexInPeriod";
-            }
 
-            if (Who1.equals("ostan")) {
-              q1+=" , ostan";
+            //    q1="SELECT avg(rating) as rating, IndexInPeriod , type , ostan  , latitude , longitude FROM " + OutputTableName ;
+
+                q1="SELECT avg(rating) as rating, IndexInPeriod , type , ostan  FROM " + OutputTableName;
+
+            if(i1<3){
+                q1+= " where type = " + Integer.toString(i1);
+                q1+= " GROUP BY IndexInPeriod";
+
+                if (Who1.equals("ostan")) {
+                    q1+=" , ostan";
+                }
             }else{
 
-            }
-            cursor1 = mAdvDatabase.rawQuery(q1, null);
+                if (Who1.equals("ostan")) {
+                    q1+= " GROUP BY ostan";
+                }
 
+            }
+            int t=0;
+if(i1==3 &&Who1.equals("kol")){
+   t=0;
+}
+            t=1;
+            cursor1 = mAdvDatabase.rawQuery(q1, null);
             Cursor cursor = new CursorWrapper(cursor1);
             cursor.moveToFirst();
             int MakeItUnTemp = 0;
@@ -1298,6 +1347,12 @@ TaskDone();
                         //	Log.e(" salam", "rating:" + a2 + "type:" + i1 + "IndexInPeriod:" + a1);
                         ContentValues InsertContent = new ContentValues();
                         DatabaseUtils.cursorRowToContentValues(cursor, InsertContent);
+                        if(i1==3){
+                            InsertContent.put("type",3);
+                        }
+                        if (Who1.equals("ostan")) {
+                      //      InsertContent.put("ostan",-1);
+                        }
                         InsertContent.remove("_id");
                         mAdvDatabase.insert(OutputSummaryTableName, null, InsertContent);
                         cursor.moveToNext();
@@ -1307,39 +1362,26 @@ TaskDone();
                     cursor.close();
                 }
                 int a = 2;
-                //mAdvDatabase.execSQL("DELETE FROM HappyDataBase where LastData = 1 AND type ="+i1);//Last data is a temporary average but in untemp places
             }
         }
     }
     public void putNewData(float NumStars) {
-
+        ForceUpload= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("ForceUpload", false);
         Calendar cc = GregorianCalendar.getInstance();
         ContentValues values2 = CurrentTime();
         values2.put("rating", NumStars);
         values2.put("type", -1);
         values2.put("WhyPosition", WhyPosition);
         values2.put("ostan", ostan);
-        //sp sp1=new sp(getActivity(),sparray);
-        sp sp1 = new sp(getActivity(), 1);
+        sp sp1 = new sp(context1, 1);
         sp1.increment(WhyPosition);
-
-     //   sp sp2 = new sp(getActivity(), 2);
-       // sp2.increment(WhyPosition);
-
         mAdvDatabase.insert("HappyDataBase", null, values2); //-1 means raw. actually it may not be important at all!
-        //updatedb();
         values2.put("type", 0);
         mAdvDatabase.insert("HappyDataBaseTemp", null, values2);
-        //  updatedb("HappyDataBaseTemp","HappyDataBaseAlaki");
-        //updatedb("HappyDataBaseTemp", "HappyDataBase");
-        /*
-        makeText(getActivity(),
-                R.string.darhalesabt,
-                Toast.LENGTH_SHORT).show();
-       // updatedb2();
-       */
         justsabt=true;
-        new UpdateAsync().execute();
+
+        UpdateAsyncConditional();
+
 
     }
     public void UploadEvent(EventEntityTimeSeries event, String CollectionName) {
@@ -1394,7 +1436,6 @@ TaskDone();
     public void onStart() {
         super.onStart();
         // getActivity().invalidateOptionsMenu();
-        mGoogleApiClient.connect();
     }
     @Override
     public void onStop() {
@@ -1542,74 +1583,10 @@ TaskDone();
 
     }
 
-    public void updatemyplacesetOnClickListener() {
-      //  new MainFragment().updatemyplacesetOnClickListener();
-
-     //   if (mGoogleApiClient.isConnected()) {
-// Assume thisActivity is the current activity
-       // Activity thisActivity=getActivity();
-        //context1
-
-
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= Build.VERSION_CODES.M){
-            int permissionCheck = ContextCompat.checkSelfPermission(context1,
-                    Manifest.permission.ACCESS_FINE_LOCATION);
-
-            if (ContextCompat.checkSelfPermission(context1,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(context1,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-                // MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-            // Do something for lollipop and above versions
-        } else{
-            // do something for phones running an SDK before lollipop
-            updatemyplaceAfterPermission();
-        }
 
 
 
-    }
 
-
-    public void updatemyplaceAfterPermission(){
-        LocationRequest request = LocationRequest.create();
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        request.setNumUpdates(3);
-        request.setInterval(0);
-
-        LocationServices.FusedLocationApi
-                .requestLocationUpdates(mGoogleApiClient, request, new LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-                        // QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",location.getLatitude());
-                        if (location != null) {
-                            QueryPreferences.setStoredDouble(getActivity(), "Latitude", location.getLatitude());
-                            QueryPreferences.setStoredDouble(getActivity(), "Longitude", location.getLongitude());
-                        }
-                        mCurrentLocation = location;
-                    }
-                });
-
-        String strtemp;
-        if (mCurrentLocation == null) {
-            strtemp = "No Data. Seems Not Connected. You May need to update Google Play Services";
-        } else {
-            strtemp = "Location Retrieved Successfully";
-        }
-        makeText(getActivity(),
-                strtemp,
-                Toast.LENGTH_LONG).show();
-
-        //   }
-    }
     @Override
     public void onConnected(Bundle bundle) {
        // updatemyplacesetOnClickListener();
@@ -1629,26 +1606,7 @@ TaskDone();
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay! Do the task you need to do.
-                    updatemyplaceAfterPermission();
-
-
-                } else {
-
-                    // permission denied, boo! Disable the functionality that depends on this permission.
-                }
-                return;
-            }
-        }
-    }
     private class CrimeHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener  {
         public TextView mTitleTextView;
@@ -1663,130 +1621,85 @@ TaskDone();
         @Override
         public void onClick(View v) {
             switch(position1){
-                case 0:
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                    break;
-                case 1:
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                    break;
-                case 2:
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                    break;
                 case 3:
-
-
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_hour);
                     updateAndShowHappinessFragment();
                     break;
                 case 4:
-
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                    QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_hour);
                     updateAndShowHappinessFragment();
                     break;
                 case 5:
-
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                    QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.man);
+                    // QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_hour);
                     updateAndShowHappinessFragment();
-
-
                     break;
                 case 6:
+
+
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_chera);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
                     break;
                 case 7:
+
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(context1,"FromWhen",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_day);
+                    // QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_hour);
+                    updateAndShowHappinessFragment();
                     break;
                 case 8:
+
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(context1,"FromWhen",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_day);
+                    updateAndShowHappinessFragment();
+
+
                     break;
                 case 9:
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.region);
+                    QueryPreferences.setStoredInt(context1,"FromWhen",R.id.azyekhaftepish);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_day);
+                    updateAndShowHappinessFragment();
+
+
                     break;
+                case 0:
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.man);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_min);
+                    updateAndShowHappinessFragment();
+                    break;
+
+                case 1:
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.kol);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_min);
+                    updateAndShowHappinessFragment();
+                    break;
+
+                case 2:
+                    QueryPreferences.setStoredInt(context1,"DefaultTarikhcheOrAmar",R.id.radio_amar);
+                    QueryPreferences.setStoredInt(context1,"DefaultWho",R.id.region);
+                    QueryPreferences.setStoredInt(context1,"DefaultTime",R.id.radio_min);
+                    updateAndShowHappinessFragment();
+                    break;
+
             }
 
-            /*
-            PersAmarDay = (Button) v.findViewById(R.id.PersAmarDay);
-            PersAmarDay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                }
-            });
-            IranAmarDay = (Button) v.findViewById(R.id.IranAmarDay);
-            IranAmarDay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_amar);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                }
-            });
-            WhyMe = (Button) v.findViewById(R.id.Why1);
-            WhyMe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                }
-            });
-            WhyAll = (Button) v.findViewById(R.id.Why2);
-            WhyAll.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_chera);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                }
-            });
 
-            TSThisWeekAll = (Button) v.findViewById(R.id.TSWThisWeek);
-            TSThisWeekAll.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.kol);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.azyekhaftepish);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                    // QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_hour);
-                    updateAndShowHappinessFragment();
-                }
-            });
-
-            TSThisWeekMe  = (Button) v.findViewById(R.id.TSPersThisWeek);
-            TSThisWeekMe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTarikhcheOrAmar",R.id.radio_tarikhche);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultWho",R.id.man);
-                    QueryPreferences.setStoredInt(getActivity(),"FromWhen",R.id.azyekhaftepish);
-                    QueryPreferences.setStoredInt(getActivity(),"DefaultTime",R.id.radio_day);
-                    updateAndShowHappinessFragment();
-                }
-            });
-            */
 
         }
     }
@@ -1797,7 +1710,7 @@ TaskDone();
         }
         @Override
         public CrimeHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            LayoutInflater layoutInflater = LayoutInflater.from(context1);
             /*
             View view = layoutInflater
                     .inflate(android.R.layout.simple_list_item_1, parent, false);
@@ -1825,17 +1738,13 @@ TaskDone();
 
         @Override
         protected void onPreExecute() {
-            /*
-            dialog = new ProgressDialog(getActivity());
-            dialog.setMessage("Loading...");
-            dialog.setCancelable(false);
-            dialog.show();
-            */
+
             super.onPreExecute();
         }
 
         @Override
         protected String doInBackground(String... arg0) {
+            Log.e("S","S");
             isNetworkAvailable2(false);
             return "";
         }
@@ -1858,7 +1767,7 @@ TaskDone();
         if(WorkOffline==false) {
             final boolean InvokeTaskDone2 = InvokeTaskDone;
             try {
-                Log.e("lop", "sdfsdfsdf");
+             //   Log.e("lop", "sdfsdfsdf");
                 String url1 = "http://stackoverflow.com/questions/6493517/detect-if-android-device-has-internet-connection";
                 url1 = "http://devcenter.kinvey.com/images/logo.png";
                 System.setProperty("http.keepAlive", "false");
@@ -1969,8 +1878,11 @@ TaskDone();
                     Log.e("errorrrr","no function to run  "+temp);
             }
         }else{
-            if (dialog.isShowing()) {
-                dialog.dismiss();
+            Log.e("End","End");
+            if(dialog!=null) {
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
             }
         }
     }

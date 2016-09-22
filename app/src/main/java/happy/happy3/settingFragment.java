@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -24,24 +25,21 @@ import static android.widget.Toast.makeText;
  */
 public class settingFragment extends Fragment {
 	private Button deleteeverything;
-	private Button updatemyplace;
-	private Button whereami;
+
 	private EditText textViewDownloadMinute;
 	private EditText textViewUploadMinute;
-	private Switch ImMasterSwitch;
+	//private SwitchCompat ImMasterSwitch;
 	private Button chooseostan;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		new MainFragment().mGoogleApiClient.connect();
 	}
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 		final View v = inflater.inflate(R.layout.settinglayout2, container, false);
-		whereami = (Button) v.findViewById(R.id.whereami);
-		updatemyplace = (Button) v.findViewById(R.id.updatemyplace);
-		 ImMasterSwitch = (Switch) v.findViewById(R.id.ImMaster);
+
+		SwitchCompat ImMasterSwitch = (SwitchCompat) v.findViewById(R.id.ImMaster);
 chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 
 		chooseostan.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +54,13 @@ chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 
 		 textViewDownloadMinute=(EditText) v.findViewById(R.id.textViewDownloadMinute);
 		textViewUploadMinute=(EditText) v.findViewById(R.id.textViewUploadMinute);
-		ImMasterSwitch.setChecked(new MainFragment().ImMaster);
+
+
+
+		ImMasterSwitch.setChecked(PreferenceManager.getDefaultSharedPreferences(getActivity()).getBoolean("ImMaster", false));
+
+
+
 		ImMasterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -68,6 +72,21 @@ chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 			}
 		});
 
+
+
+
+
+		ImMasterSwitch.setChecked(new MainFragment().ImMaster);
+		ImMasterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				new MainFragment().ImMaster=isChecked;
+				PreferenceManager.getDefaultSharedPreferences(getActivity())
+						.edit()
+						.putBoolean("ImMaster", isChecked)
+						.apply();
+			}
+		});
 
 		textViewUploadMinute.setText(Integer.toString(new MainFragment().UploadMinute));
 		textViewDownloadMinute.setText(Integer.toString(new MainFragment().DownloadMinute));
@@ -93,7 +112,7 @@ chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 					m1=Integer.parseInt(temp20);
 				}
 				new MainFragment().UploadMinute=m1;
-				QueryPreferences.setStoredInt(getActivity(), "UploadMinute", m1);
+				QueryPreferences.setStoredInt(getActivity(), "UploadMinute2", m1);
 			}
 		});
 
@@ -110,11 +129,6 @@ chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
 				String temp20=textViewDownloadMinute.getText().toString();
 				int m1;
 				if(temp20.equals("")){
@@ -124,7 +138,12 @@ chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 				}
 
 				new MainFragment().DownloadMinute=m1;
-				QueryPreferences.setStoredInt(getActivity(), "DownloadMinute", m1);
+				QueryPreferences.setStoredInt(getActivity(), "DownloadMinute2", m1);
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+
 			}
 		});
 
@@ -133,7 +152,8 @@ chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 
 
 
-		Switch WorkOfflineSwitch = (Switch) v.findViewById(R.id.WorkOffline);
+		SwitchCompat WorkOfflineSwitch = (SwitchCompat) v.findViewById(R.id.WorkOffline);
+
 
 
 		WorkOfflineSwitch.setChecked(new MainFragment().WorkOffline);
@@ -149,26 +169,17 @@ chooseostan=(Button) v.findViewById(R.id.selectyourostanbutton);
 		});
 
 
-		whereami.setOnClickListener(new View.OnClickListener() {
+		SwitchCompat ForceUploadSwitch = (SwitchCompat) v.findViewById(R.id.ForceUpload);
+
+		ForceUploadSwitch.setChecked(new MainFragment().ForceUpload);
+		ForceUploadSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
-			public void onClick(View v) {
-
-				getActivity().getSupportFragmentManager().beginTransaction()
-						.replace(R.id.fragment_container, new MapFragment())
-						.addToBackStack(null)
-						.commit();
-
-
-			}
-		});
-
-		updatemyplace.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				MainFragment x1 = new MainFragment();
-				x1.context1=getActivity();
-				x1.updatemyplacesetOnClickListener();
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				new MainFragment().ForceUpload=isChecked;
+				PreferenceManager.getDefaultSharedPreferences(getActivity())
+						.edit()
+						.putBoolean("ForceUpload", isChecked)
+						.apply();
 			}
 		});
 
