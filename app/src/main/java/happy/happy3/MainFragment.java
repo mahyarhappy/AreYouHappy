@@ -171,6 +171,8 @@ public String[] engwhy={"dalilnarahatiyakhoshhali","khanevade","doostan","salama
         View v = inflater.inflate(R.layout.mainfragment, container, false);
         context1=getContext();
         onCreateWorks();
+        //WorkOffline= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("WorkOffline", false);
+
         mCrimeRecyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(context1));
         String[] tempstring1 = getResources().getStringArray(R.array.conv_array);
@@ -200,8 +202,8 @@ public String[] engwhy={"dalilnarahatiyakhoshhali","khanevade","doostan","salama
         @Override
         public void onClick(View v) {
             ForceUpload=true;
-            new UpdateAsync().execute();
-//           PollService.setServiceAlarm(context1,true);
+           // new UpdateAsync().execute();
+           PollService.setServiceAlarm(context1,true);
         }
 
     });
@@ -272,7 +274,17 @@ if(FirstStartOfProgram){
             .replace(R.id.fragment_container, new chooseostanfragment())
             .addToBackStack(null)
             .commit();
+    PollService.setServiceAlarm(context1,true);
 }
+        boolean SetServiceOnetime= PreferenceManager.getDefaultSharedPreferences(context1).getBoolean("SetServiceOnetime3", true);
+        if(SetServiceOnetime){
+            SetServiceOnetime=false;
+            PreferenceManager.getDefaultSharedPreferences(context1)
+                    .edit()
+                    .putBoolean("SetServiceOnetime3", false)
+                    .apply();
+            PollService.setServiceAlarm(context1,true);
+        }
 
         return v;
     }
@@ -548,7 +560,7 @@ String sasdasd=mKinveyClient.user().getId();
                 sp sp1 = new sp(context1, 1);
                // Log.e("spcount",Integer.toString(engwhy.length));
                 for (int iy = 0; iy <= (sp1.getarray(1).length - 1); iy += 1) {
-                    Log.e("spcount",Integer.toString(iy));
+                  //  Log.e("spcount",Integer.toString(iy));
                     EventEntityWhy event1 = new EventEntityWhy();
                     event1.set("whyindex", iy);
                     int temp12 = sp1.get(iy);
