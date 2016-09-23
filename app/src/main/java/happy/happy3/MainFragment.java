@@ -202,8 +202,8 @@ public String[] engwhy={"dalilnarahatiyakhoshhali","khanevade","doostan","salama
         @Override
         public void onClick(View v) {
             ForceUpload=true;
-           // new UpdateAsync().execute();
-           PollService.setServiceAlarm(context1,true);
+            new UpdateAsync().execute();
+           //PollService.setServiceAlarm(context1,true);
         }
 
     });

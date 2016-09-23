@@ -298,7 +298,7 @@ Integer zamanhaMs;
     }
     boolean DrawLine=false;
 
-    if(IsTaikhche!=-10 && cursor1!=null) {
+    if(IsTaikhche!=-10 &&( cursor1!=null || IsTaikhche==-1)) {
         if (IsTaikhche == 0 || IsTaikhche == 1) {
             DrawLine = true;
             cursor = new CursorWrapper(cursor1);
